@@ -132,7 +132,15 @@
     { re: /^[A-Z]{2}\d[CRU]-[A-Z]\d{2}[A-Z]?(-[0-9A-Z]{1,4})?$/i, name: 'GALLERIA（ドスパラ／サードウェーブ）' },
     { re: /^[A-Z]{2}-[AI]\d[A-Z]\d{2}[A-Z0-9]*$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' }
   ];
-  // 戻り値: { name, guess } または null（guess=true は型番の形からの推定）
+  // 型番が途中までしか入力されていない場合の判定（書き出しの形で見分ける）
+  //  GALLERIA ：「RL7C」「RL7C-」「RL7C-R4」など、英字2文字＋数字1桁＋C/R/U で始まる
+  //  マウス    ：「JG-A7」「DG-I7G」など（NEC の「PC-」で始まる型番は除外）
+  var BTO_MODEL_PREFIX = [
+    { re: /^[A-Z]{2}\d[CRU](-([A-Z](\d{1,2}[A-Z]?)?)?)?$/i, name: 'GALLERIA（ドスパラ／サードウェーブ）' },
+    { re: /^(?!PC-)[A-Z]{2}-[AI]\d([A-Z]\d{0,2})?$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' }
+  ];
+  // 戻り値: { name, guess, partial } または null
+  //  guess=true は型番の形からの推定、partial=true は型番の途中までの入力からの推定
   function detectBTO(text) {
     if (!text) return null;
     var s = String(text)
@@ -145,7 +153,10 @@
     }
     var compact = s.replace(/\s+/g, '');
     for (i = 0; i < BTO_MODEL_PATTERNS.length; i++) {
-      if (BTO_MODEL_PATTERNS[i].re.test(compact)) return { name: BTO_MODEL_PATTERNS[i].name, guess: true };
+      if (BTO_MODEL_PATTERNS[i].re.test(compact)) return { name: BTO_MODEL_PATTERNS[i].name, guess: true, partial: false };
+    }
+    for (i = 0; i < BTO_MODEL_PREFIX.length; i++) {
+      if (BTO_MODEL_PREFIX[i].re.test(compact)) return { name: BTO_MODEL_PREFIX[i].name, guess: true, partial: true };
     }
     return null;
   }

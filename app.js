@@ -136,9 +136,11 @@
       html += '<div class="msg msg-ok"><p class="msg-title">対応表で一致する機種が見つかりました</p>' +
         '<p>' + esc(state.pioMatch.maker) + ' ' + esc(state.pioMatch.model) + '：下の「結果」に、使える組み合わせを表示しています。</p></div>';
     } else if (state.bto) {
-      var btoTitle = state.bto.guess
-        ? '「' + esc(raw) + '」は ' + esc(state.bto.name) + ' のカスタムメイド（BTO）パソコンの型番のようです'
-        : esc(state.bto.name) + ' はカスタムメイド（BTO）パソコンです';
+      var btoTitle = state.bto.partial
+        ? '「' + esc(raw) + '」は ' + esc(state.bto.name) + ' のカスタムメイド（BTO）パソコンの型番（の一部）のようです'
+        : state.bto.guess
+          ? '「' + esc(raw) + '」は ' + esc(state.bto.name) + ' のカスタムメイド（BTO）パソコンの型番のようです'
+          : esc(state.bto.name) + ' はカスタムメイド（BTO）パソコンです';
       html += '<div class="msg msg-warn"><p class="msg-title">' + btoTitle + '</p>' +
         '<p>カスタムメイドのパソコンは、購入時にパーツを選んで組み立てるため、型番ごとの対応表（PIO）には載っていないことがほとんどです。</p>' +
         '<p>下の「<b>② スペックで探す</b>」で、メモリーの形・世代・速度を選んでください。I-O DATA製で使える可能性が高い商品をご案内します。</p>' +
@@ -149,6 +151,9 @@
       html += '<div class="msg msg-info"><p class="msg-title">対応表（PIO）で確認できます</p>' +
         '<p>メーカー製パソコンの場合、I-O DATAの対応表（PIO）に載っている可能性があります。下のボタンから検索結果を開いてください。</p>' +
         '<p>PIOで見つからなかった場合は、下の「<b>② スペックで探す</b>」へお進みください。</p>' +
+        (J.normalizeModel(raw).length < 5
+          ? '<p class="note">入力された型番が短いため、検索結果が0件になったり、関係のない機種がたくさん出たりすることがあります。型番はパソコン本体の裏面や側面のシールなどで確認して、できるだけ最後まで入力してください。</p>'
+          : '') +
         '<div class="actions"><a class="btn" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOで「' + esc(raw) + '」を検索する</a>' +
         '<a class="btn btn-outline" href="' + PIO_TOP_URL + '" target="_blank" rel="noopener">PIOの検索画面を開く</a></div></div>';
     }
