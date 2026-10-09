@@ -107,8 +107,8 @@
       price = '<p class="sku-price"><span class="p-in">' + yen(p.priceTaxIn) + '</span>' +
         (p.priceTaxEx ? '<span class="p-ex">（税抜 ' + yen(p.priceTaxEx) + '）</span>' : '') + '</p>';
     } else {
-      price = '<p class="sku-price"><span class="p-open">オープン価格</span><span class="p-ex">' +
-        (business ? '（価格はお取引先の販売店へお問い合わせください）' : '（販売店・ioPLAZAでご確認ください）') + '</span></p>';
+      price = '<p class="sku-price"><span class="p-open">オープン価格</span>' +
+        (business ? '<span class="p-ex">（価格はお取引先の販売店へお問い合わせください）</span>' : '') + '</p>';
     }
     return '<div class="sku-row' + (p.status === 'discontinued' ? ' is-discontinued' : '') + '">' +
       (p.capacityGB ? '<div class="cap-pill"><b>' + p.capacityGB + '</b>GB</div>' : '<div class="cap-pill">-</div>') +
