@@ -1,0 +1,60 @@
+name: 商品データ自動更新
+
+on:
+  schedule:
+    - cron: '0 18 * * *'   # 毎日 3:00（日本時間）
+  workflow_dispatch:        # 手動実行ボタン
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 前回データを保存
+        run: cp data/products.json /tmp/prev.json
+
+      - name: 解析部分のテスト
+        run: node scripts/test-parser.mjs
+
+      - name: 商品データを取得
+        run: node scripts/scrape.mjs
+
+      - name: 健全性チェック
+        id: health
+        continue-on-error: true
+        run: node scripts/health-check.mjs /tmp/prev.json data/products.json 2>&1 | tee /tmp/health.log; exit ${PIPESTATUS[0]}
+
+      - name: 問題なし → そのまま本番に反映
+        if: steps.health.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/products.json
+          git diff --cached --quiet || git commit -m "商品データ自動更新 $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: 異常あり → PR と Issue を作って知らせる
+        if: steps.health.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BR="data-check-$(date -u +%Y%m%d-%H%M)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BR"
+          git add data/products.json
+          git commit -m "商品データ（要確認）$(date -u +%Y-%m-%d)" || true
+          git push origin "$BR"
+          BODY="$(printf '自動更新の健全性チェックで問題が見つかったため、本番には反映していません。\n\n```\n%s\n```\n\n内容を確認し、問題なければこのPRをマージしてください。' "$(cat /tmp/health.log)")"
+          gh pr create --head "$BR" --title "【要確認】メモリーセレクター商品データ $(date -u +%Y-%m-%d)" --body "$BODY" || true
+          gh issue create --title "【要確認】メモリーセレクターの自動更新で異常を検知 $(date -u +%Y-%m-%d)" --body "$BODY"
