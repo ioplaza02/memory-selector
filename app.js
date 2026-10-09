@@ -15,6 +15,7 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
   var DATA = { products: [], updatedAt: null };
+  var applyingUrl = false;
   var PIO = { entries: [] };
 
   var state = {
@@ -152,22 +153,50 @@
           ? '<p class="note">型番の形から判断しています。メーカー製パソコンの場合は <a href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOで検索</a> もお試しください。</p>'
           : '') + '</div>';
     } else {
+      var useFrame = canEmbedPio();
       html += '<div class="msg msg-info pio-box"><p class="msg-title">対応表（PIO）の検索結果</p>' +
-        '<p>メーカー製パソコンの場合、I-O DATAの対応表（PIO）に載っていることがあります。下の枠に「<b>' + esc(pioKw) + '</b>」の検索結果を表示しています。</p>' +
+        '<p>メーカー製パソコンの場合、I-O DATAの対応表（PIO）に載っていることがあります。' + (useFrame
+          ? '下の枠に「<b>' + esc(pioKw) + '</b>」の検索結果を表示しています。'
+          : '下のボタンから「<b>' + esc(pioKw) + '</b>」の検索結果を確認してください。') + '</p>' +
         (pioKw !== raw ? '<p class="note">メーカー名（' + esc(raw.slice(0, raw.length - pioKw.length).trim()) + '）を除いて検索しています。</p>' : '') +
         (J.normalizeModel(raw).length < 5
           ? '<p class="note">入力された型番が短いため、関係のない機種がたくさん表示されることがあります。型番はパソコン本体の裏面や側面のシールなどで確認して、できるだけ最後まで入力してください。</p>'
           : '') +
-        // PIO の結果ページをそのまま枠の中に表示する（こちらから中身は読み取らない）
-        '<div class="pio-frame-wrap"><iframe class="pio-frame" src="' + esc(pioUrl) + '" title="PIO の検索結果" loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe></div>' +
-        '<p class="pio-guide"><b>「該当情報なし」と表示された場合</b>は、下のボタンから「② スペックで探す」へお進みください。お使いのパソコンが表示された場合は、機種名をクリックすると対応メモリーを確認できます。</p>' +
-        '<div class="actions"><button type="button" class="btn js-go-spec">② スペックで探す へ進む</button>' +
-        '<a class="btn btn-outline" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">検索結果を新しいタブで開く</a></div>' +
-        '<p class="note">枠の中に何も表示されない場合は、「検索結果を新しいタブで開く」からご確認ください。</p></div>';
+        (useFrame ? pioChoices(useFrame) +
+            // パソコン：PIO の結果ページをそのまま枠の中に表示する（こちらから中身は読み取らない）
+            '<div class="pio-frame-wrap"><iframe class="pio-frame" src="' + esc(pioUrl) + '" title="PIO の検索結果" loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe></div>' +
+            '<p class="note">枠の中に何も表示されない場合は、<a href="' + esc(pioUrl) + '" target="_blank" rel="noopener">検索結果を新しいタブで開く</a>からご確認ください。</p></div>'
+          // スマホ・タブレット：枠に埋め込むと表示されないため、先に「開く」ボタン、その下に確認後の進み方
+          : '<a class="btn pio-open-btn" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOの検索結果を見る（新しいタブ）</a>' +
+            '<p class="pio-after">確認したら、このページに戻って次のどちらかへお進みください。</p>' +
+            pioChoices(useFrame) + '</div>');
     }
     box.innerHTML = html;
     box.hidden = false;
+    if (box.querySelector('.pio-box') && !applyingUrl) {
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    updateNextHint();
     render();
+  }
+
+  // PIO の結果を見たあとの進み方（表示された／該当情報なし）
+  function pioChoices(useFrame) {
+    return '<div class="pio-choices">' +
+      '<div class="pio-choice"><span class="pio-choice-ico" aria-hidden="true">✓</span>' +
+        '<div><b>お使いのパソコンが表示された</b><br>' + (useFrame
+          ? '下の枠の中で機種名をクリックすると、対応メモリーを確認できます。'
+          : 'PIOの画面で機種名をタップすると、対応メモリーを確認できます。') + '</div></div>' +
+      '<div class="pio-choice pio-choice-next"><span class="pio-choice-ico" aria-hidden="true">→</span>' +
+        '<div><b>「該当情報なし」と表示された</b><br><button type="button" class="btn js-go-spec">② スペックで探す へ進む ↓</button></div></div>' +
+    '</div>';
+  }
+
+  // PIO を枠に埋め込めるか：スマホ・タブレット（画面が狭い、または指で操作する端末）では埋め込まない
+  function canEmbedPio() {
+    try {
+      return !window.matchMedia('(max-width: 820px), (pointer: coarse)').matches;
+    } catch (e) { return true; }
   }
 
   // 先頭のメーカー名だけを外す（例「HP 14-dq5000」→「14-dq5000」）。
@@ -457,6 +486,26 @@
     return html;
   }
 
+  // ===== 「下に続きがあります」の浮かぶ矢印 =====
+  // PIO の枠が画面に見えていて、② スペックで探す がまだ見えていない間だけ表示する
+  function updateNextHint() {
+    var hint = $('#next-hint');
+    var frame = $('#model-result').hidden ? null : $('.pio-frame');
+    if (!frame) { hint.hidden = true; return; }
+    var vh = window.innerHeight;
+    var fr = frame.getBoundingClientRect();
+    var sp = $('#sec-spec').getBoundingClientRect();
+    var frameVisible = fr.top < vh && fr.bottom > 0;
+    var specVisible = sp.top < vh - 120;
+    hint.hidden = !(frameVisible && !specVisible);
+  }
+  function goSpec() {
+    var sec = $('#sec-spec');
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    sec.classList.add('flash');
+    setTimeout(function () { sec.classList.remove('flash'); }, 1600);
+  }
+
   // ===== 共有URL =====
   // 選んだ条件を URL のパラメーターにする（例 ?form=SODIMM&ddr=5&speed=5200&cap=16&eol=1&model=RL7C-R45-5N）
   var ALLOWED = {
@@ -499,7 +548,9 @@
     if ((v = q.get('model'))) {
       v = v.slice(0, 60);
       $('#model-input').value = v;
+      applyingUrl = true;
       runModel(v);           // 中で render() まで行う
+      applyingUrl = false;
     } else {
       render();
     }
@@ -550,12 +601,11 @@
     $('#toggle-eol').addEventListener('change', function (e) { state.showEol = e.target.checked; render(); });
     $('#share-btn').addEventListener('click', onShare);
     $('#model-result').addEventListener('click', function (e) {
-      if (!e.target.closest('.js-go-spec')) return;
-      var sec = $('#sec-spec');
-      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      sec.classList.add('flash');
-      setTimeout(function () { sec.classList.remove('flash'); }, 1600);
+      if (e.target.closest('.js-go-spec')) goSpec();
     });
+    $('#next-hint').addEventListener('click', goSpec);
+    window.addEventListener('scroll', updateNextHint, { passive: true });
+    window.addEventListener('resize', updateNextHint);
 
     var pioLoad = loadJSON('data/pio-memory.json').then(function (d) { PIO = d || { entries: [] }; })
       .catch(function () { PIO = { entries: [] }; });

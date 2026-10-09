@@ -289,7 +289,36 @@ button.btn { font-family: inherit; cursor: pointer; }
 
 /* ---------- PIO の結果を枠内に表示 ---------- */
 .pio-frame-wrap { margin: 12px 0 10px; border: 1px solid #c9d6ee; border-radius: 10px; overflow: hidden; background: #fff; }
-.pio-frame { display: block; width: 100%; height: 460px; border: 0; background: #fff; }
+.pio-frame { display: block; width: 100%; height: 380px; border: 0; background: #fff; }
 .pio-guide { font-size: 14px; }
 @media (max-width: 640px) { .pio-frame { height: 400px; } }
 .pio-box .actions + .note { margin-top: 10px; }
+
+/* ---------- PIO：枠の上の選択肢 ---------- */
+.pio-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 0; }
+.pio-choice { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1px solid #c9d6ee; border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.6; }
+.pio-choice b { font-size: 14px; }
+.pio-choice-ico { flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--ok); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.pio-choice-next { border-color: var(--amber); background: var(--amber-soft); }
+.pio-choice-next .pio-choice-ico { background: var(--amber); }
+.pio-choice .btn { margin-top: 6px; padding: 7px 14px; font-size: 13px; }
+
+/* ---------- 画面下に浮かぶ「続きがあります」 ---------- */
+.next-hint {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 50;
+  display: inline-flex; align-items: center; gap: 10px; border: 0; cursor: pointer; font-family: inherit;
+  background: var(--amber); color: #fff; font-weight: 700; font-size: 14px;
+  padding: 10px 18px; border-radius: 999px; box-shadow: 0 6px 18px rgba(29,43,79,.28);
+}
+.next-hint:hover { background: #c4721f; }
+.next-hint-arrow { display: inline-block; font-size: 18px; animation: bob 1.2s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(-2px); } 50% { transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .next-hint-arrow { animation: none; } }
+@media (max-width: 640px) {
+  .pio-choices { grid-template-columns: 1fr; }
+  .pio-frame { height: 340px; }
+  .next-hint { font-size: 13px; padding: 9px 14px; white-space: nowrap; }
+}
+
+.pio-open-btn { display: block; text-align: center; margin: 12px 0 0; padding: 14px 16px; font-size: 15px; }
+.pio-after { margin: 12px 0 0; font-size: 13px; font-weight: 700; color: var(--navy); }
