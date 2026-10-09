@@ -123,11 +123,27 @@
     { re: /ZEFT/i, name: 'ZEFT（パソコンショップSEVEN）' },
     { re: /FRONTIER|^FR[A-Z]{2,}/i, name: 'FRONTIER（フロンティア）' }
   ];
+  // ブランド名が無く、型番だけ入力された場合の判定（型番の「形」で見分ける）
+  //  GALLERIA ：英字2文字＋数字1桁＋C/R/U ＋「-」＋英字1文字＋数字2桁 … 例 RL7C-R45-5N、XA7C-R47、ZA9R-R49T
+  //  マウス    ：英字2文字＋「-」＋A/I＋数字1桁＋英字1文字＋数字2桁   … 例 JG-A7G60、DG-I7G70
+  var BTO_MODEL_PATTERNS = [
+    { re: /^[A-Z]{2}\d[CRU]-[A-Z]\d{2}[A-Z]?(-[0-9A-Z]{1,4})?$/i, name: 'GALLERIA（ドスパラ／サードウェーブ）' },
+    { re: /^[A-Z]{2}-[AI]\d[A-Z]\d{2}[A-Z0-9]*$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' }
+  ];
+  // 戻り値: { name, guess } または null（guess=true は型番の形からの推定）
   function detectBTO(text) {
     if (!text) return null;
-    var s = String(text).trim();
-    for (var i = 0; i < BTO_PATTERNS.length; i++) {
-      if (BTO_PATTERNS[i].re.test(s)) return BTO_PATTERNS[i].name;
+    var s = String(text)
+      .replace(/[！-～]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+      .replace(/[‐ー－]/g, '-')
+      .trim();
+    var i;
+    for (i = 0; i < BTO_PATTERNS.length; i++) {
+      if (BTO_PATTERNS[i].re.test(s)) return { name: BTO_PATTERNS[i].name, guess: false };
+    }
+    var compact = s.replace(/\s+/g, '');
+    for (i = 0; i < BTO_MODEL_PATTERNS.length; i++) {
+      if (BTO_MODEL_PATTERNS[i].re.test(compact)) return { name: BTO_MODEL_PATTERNS[i].name, guess: true };
     }
     return null;
   }
