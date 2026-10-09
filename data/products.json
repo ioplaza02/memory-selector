@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-09T01:35:24.213Z",
+  "updatedAt": "2026-10-09T02:48:15.253Z",
   "source": "https://www.iodata.jp/product/memory/",
   "products": [
     {
@@ -12,7 +12,11 @@
       "capacityGB": 8,
       "business": false,
       "status": "limited",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177700",
+      "image": "https://www.iodata.jp/image/d5r5600_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R5600-16G",
@@ -24,7 +28,11 @@
       "capacityGB": 16,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177717",
+      "image": "https://www.iodata.jp/image/d5r5600_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R5600-32G",
@@ -36,7 +44,11 @@
       "capacityGB": 32,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177724",
+      "image": "https://www.iodata.jp/image/d5r5600_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R5600-8G/GQ",
@@ -48,7 +60,11 @@
       "capacityGB": 8,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193519",
+      "image": "https://www.iodata.jp/image/d5r5600gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R5600-16G/GQ",
@@ -60,7 +76,11 @@
       "capacityGB": 16,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193526",
+      "image": "https://www.iodata.jp/image/d5r5600gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R5600-32G/GQ",
@@ -72,7 +92,11 @@
       "capacityGB": 32,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193533",
+      "image": "https://www.iodata.jp/image/d5r5600gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R4800-8G",
@@ -84,7 +108,11 @@
       "capacityGB": 8,
       "business": false,
       "status": "limited",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177595",
+      "image": "https://www.iodata.jp/image/d5r4800_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R4800-16G",
@@ -96,7 +124,11 @@
       "capacityGB": 16,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177656",
+      "image": "https://www.iodata.jp/image/d5r4800_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R4800-32G",
@@ -108,7 +140,11 @@
       "capacityGB": 32,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177663",
+      "image": "https://www.iodata.jp/image/d5r4800_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R4800-8G/GQ",
@@ -120,7 +156,11 @@
       "capacityGB": 8,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193489",
+      "image": "https://www.iodata.jp/image/d5r4800gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R4800-16G/GQ",
@@ -132,7 +172,11 @@
       "capacityGB": 16,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193496",
+      "image": "https://www.iodata.jp/image/d5r4800gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "D5R4800-32G/GQ",
@@ -144,7 +188,11 @@
       "capacityGB": 32,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193502",
+      "image": "https://www.iodata.jp/image/d5r4800gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "DZ3200-C4G/ST",
@@ -156,7 +204,11 @@
       "capacityGB": 4,
       "business": false,
       "status": "current",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180166100",
+      "image": "https://www.iodata.jp/image/dz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "DZ3200-C8G/ST",
@@ -168,7 +220,11 @@
       "capacityGB": 8,
       "business": false,
       "status": "current",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180166117",
+      "image": "https://www.iodata.jp/image/dz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "DZ3200-C16G/ST",
@@ -180,7 +236,11 @@
       "capacityGB": 16,
       "business": false,
       "status": "current",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180166124",
+      "image": "https://www.iodata.jp/image/dz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "DZ3200-C32G/ST",
@@ -192,7 +252,11 @@
       "capacityGB": 32,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180178882",
+      "image": "https://www.iodata.jp/image/dz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R5600-8G",
@@ -204,7 +268,11 @@
       "capacityGB": 8,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177793",
+      "image": "https://www.iodata.jp/image/sd5r5600_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R5600-16G",
@@ -216,7 +284,11 @@
       "capacityGB": 16,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177809",
+      "image": "https://www.iodata.jp/image/sd5r5600_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R5600-32G",
@@ -228,7 +300,11 @@
       "capacityGB": 32,
       "business": false,
       "status": "limited",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177816",
+      "image": "https://www.iodata.jp/image/sd5r5600_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R5600-8G/GQ",
@@ -240,7 +316,11 @@
       "capacityGB": 8,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193571",
+      "image": "https://www.iodata.jp/image/sd5r5600gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R5600-16G/GQ",
@@ -252,7 +332,11 @@
       "capacityGB": 16,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193588",
+      "image": "https://www.iodata.jp/image/sd5r5600gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R5600-32G/GQ",
@@ -264,7 +348,11 @@
       "capacityGB": 32,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193595",
+      "image": "https://www.iodata.jp/image/sd5r5600gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R4800-8G",
@@ -276,7 +364,11 @@
       "capacityGB": 8,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177533",
+      "image": "https://www.iodata.jp/image/sd5r4800_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R4800-16G",
@@ -288,7 +380,11 @@
       "capacityGB": 16,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177540",
+      "image": "https://www.iodata.jp/image/sd5r4800_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R4800-32G",
@@ -300,7 +396,11 @@
       "capacityGB": 32,
       "business": false,
       "status": "discontinued",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180177557",
+      "image": "https://www.iodata.jp/image/sd5r4800_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R4800-8G/GQ",
@@ -312,7 +412,11 @@
       "capacityGB": 8,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193540",
+      "image": "https://www.iodata.jp/image/sd5r4800gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R4800-16G/GQ",
@@ -324,7 +428,11 @@
       "capacityGB": 16,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193557",
+      "image": "https://www.iodata.jp/image/sd5r4800gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SD5R4800-32G/GQ",
@@ -336,7 +444,11 @@
       "capacityGB": 32,
       "business": true,
       "status": "current",
-      "warranty": "6年保証"
+      "warranty": "6年保証",
+      "jan": "4957180193564",
+      "image": "https://www.iodata.jp/image/sd5r4800gq_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SDZ3200-C4G/ST",
@@ -348,7 +460,11 @@
       "capacityGB": 4,
       "business": false,
       "status": "limited",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180166131",
+      "image": "https://www.iodata.jp/image/sdz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SDZ3200-C8G/ST",
@@ -360,7 +476,11 @@
       "capacityGB": 8,
       "business": false,
       "status": "current",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180166148",
+      "image": "https://www.iodata.jp/image/sdz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SDZ3200-C16G/ST",
@@ -372,7 +492,11 @@
       "capacityGB": 16,
       "business": false,
       "status": "current",
-      "warranty": "無期限保証"
+      "warranty": "無期限保証",
+      "jan": "4957180166155",
+      "image": "https://www.iodata.jp/image/sdz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     },
     {
       "sku": "SDZ3200-C32G/ST",
@@ -383,8 +507,12 @@
       "speed": 3200,
       "capacityGB": 32,
       "business": false,
-      "status": "current",
-      "warranty": "無期限保証"
+      "status": "suspended",
+      "warranty": "無期限保証",
+      "jan": "4957180178868",
+      "image": "https://www.iodata.jp/image/sdz3200cst_l.jpg",
+      "priceTaxIn": null,
+      "priceTaxEx": null
     }
   ]
 }
