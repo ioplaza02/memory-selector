@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>メモリーセレクター</title>
-<link rel="stylesheet" href="style.css">
+<!-- 更新のたびに ?v= の番号を変えると、ブラウザが古いファイルを使い回さなくなる -->
+<link rel="stylesheet" href="style.css?v=20261009-16">
 </head>
 <body>
 
@@ -152,7 +153,13 @@
 </main>
 </div>
 
-<script src="judge.js"></script>
-<script src="app.js"></script>
+<!-- PIO の枠を見ている間、下に「② スペックで探す」が続いていることを知らせる -->
+<button type="button" id="next-hint" class="next-hint" hidden>
+  <span>見つからなかった場合は ② スペックで探す</span>
+  <span class="next-hint-arrow" aria-hidden="true">↓</span>
+</button>
+
+<script src="judge.js?v=20261009-16"></script>
+<script src="app.js?v=20261009-16"></script>
 </body>
 </html>
