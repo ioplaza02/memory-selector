@@ -245,3 +245,16 @@ kbd { border: 1px solid #c8ccd6; border-bottom-width: 2px; border-radius: 4px; p
   .cap-pill b { font-size: 18px; }
   .sku-code { font-size: 16px; }
 }
+
+/* ---------- 型番カードを小さく2列に ---------- */
+.sku-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.sku-row { padding: 8px 12px; gap: 12px; }
+.cap-pill { flex: 0 0 60px; padding: 4px 0; }
+.cap-pill b { font-size: 19px; }
+.sku-code { font-size: 16px; gap: 6px; }
+.p-in { font-size: 17px; }
+.p-open { font-size: 14px; }
+.p-ex { display: block; margin-left: 0; font-size: 11px; line-height: 1.5; }
+@media (max-width: 640px) {
+  .sku-list { grid-template-columns: 1fr; }
+}
