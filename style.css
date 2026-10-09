@@ -322,3 +322,4 @@ button.btn { font-family: inherit; cursor: pointer; }
 
 .pio-open-btn { display: block; text-align: center; margin: 12px 0 0; padding: 14px 16px; font-size: 15px; }
 .pio-after { margin: 12px 0 0; font-size: 13px; font-weight: 700; color: var(--navy); }
+.em-red { color: var(--bad); font-weight: 700; }

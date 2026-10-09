@@ -169,7 +169,7 @@
           // スマホ・タブレット：枠に埋め込むと表示されないため、先に「開く」ボタン、その下に確認後の進み方
           // 別タブだと戻れない方が多いため、同じタブで開き、ブラウザの「戻る」で帰ってきてもらう
           : '<a class="btn pio-open-btn js-pio-same" href="' + esc(pioUrl) + '">PIOの検索結果を見る</a>' +
-            '<p class="pio-after">確認したら、ブラウザの「<b>戻る</b>」でこのページに戻り、次のどちらかへお進みください。</p>' +
+            '<p class="pio-after">候補が<span class="em-red">0件</span>だった場合は、ブラウザの「<span class="em-red">戻る</span>」でこのページに戻り、次のどちらかへお進みください。</p>' +
             pioChoices(useFrame) + '</div>');
     }
     box.innerHTML = html;
