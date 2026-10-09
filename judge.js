@@ -114,6 +114,7 @@
     { re: /GALLERIA/i, name: 'GALLERIA（ドスパラ／サードウェーブ）' },
     { re: /RAYTREK/i, name: 'raytrek（ドスパラ／サードウェーブ）' },
     { re: /THIRDWAVE|ドスパラ/i, name: 'THIRDWAVE（ドスパラ）' },
+    { re: /LIGHTNING|MAGNATE/i, name: 'Lightning／Magnate（ドスパラ）' },
     { re: /G-?TUNE/i, name: 'G-Tune（マウスコンピューター）' },
     { re: /NEXTGEAR/i, name: 'NEXTGEAR（マウスコンピューター）' },
     { re: /DAIV/i, name: 'DAIV（マウスコンピューター）' },
@@ -130,14 +131,19 @@
   //  マウス    ：英字2文字＋「-」＋A/I＋数字1桁＋英字1文字＋数字2桁   … 例 JG-A7G60、DG-I7G70
   var BTO_MODEL_PATTERNS = [
     { re: /^[A-Z]{2}\d[CRU]-[A-Z]\d{2}[A-Z]?(-[0-9A-Z]{1,4})?$/i, name: 'GALLERIA（ドスパラ／サードウェーブ）' },
-    { re: /^[A-Z]{2}-[AI]\d[A-Z]\d{2}[A-Z0-9]*$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' }
+    { re: /^[A-Z]{2}-[AI]\d[A-Z]\d{2}[A-Z0-9]*$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' },
+    // マウス：本体ラベルの長い型番（ハイフンなし） 例 JGA7G60B5BBDW101DEC
+    { re: /^[A-Z]{2}[AI]\d[A-Z]\d{2}[A-Z0-9]{8,}$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' },
+    // G-GEAR：英字2文字＋数字1桁＋J/A ＋「-」＋英字1文字＋数字3桁 … 例 GE7J-D242/B、GA7A-F242/XB
+    { re: /^G[A-Z]\d[JA]-[A-Z]\d{3}(\/[A-Z]{1,3})?$/i, name: 'G-GEAR（TSUKUMO）' }
   ];
   // 型番が途中までしか入力されていない場合の判定（書き出しの形で見分ける）
   //  GALLERIA ：「RL7C」「RL7C-」「RL7C-R4」など、英字2文字＋数字1桁＋C/R/U で始まる
   //  マウス    ：「JG-A7」「DG-I7G」など（NEC の「PC-」で始まる型番は除外）
   var BTO_MODEL_PREFIX = [
     { re: /^[A-Z]{2}\d[CRU](-([A-Z](\d{1,2}[A-Z]?)?)?)?$/i, name: 'GALLERIA（ドスパラ／サードウェーブ）' },
-    { re: /^(?!PC-)[A-Z]{2}-[AI]\d([A-Z]\d{0,2})?$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' }
+    { re: /^(?!PC-)[A-Z]{2}-[AI]\d([A-Z]\d{0,2})?$/i, name: 'マウスコンピューター（G-Tune・NEXTGEAR など）' },
+    { re: /^G[A-Z]\d[JA]-([A-Z]\d{0,3})?$/i, name: 'G-GEAR（TSUKUMO）' }
   ];
   // 戻り値: { name, guess, partial } または null
   //  guess=true は型番の形からの推定、partial=true は型番の途中までの入力からの推定
