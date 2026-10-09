@@ -167,8 +167,9 @@
             '<div class="pio-frame-wrap"><iframe class="pio-frame" src="' + esc(pioUrl) + '" title="PIO の検索結果" loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe></div>' +
             '<p class="note">枠の中に何も表示されない場合は、<a href="' + esc(pioUrl) + '" target="_blank" rel="noopener">検索結果を新しいタブで開く</a>からご確認ください。</p></div>'
           // スマホ・タブレット：枠に埋め込むと表示されないため、先に「開く」ボタン、その下に確認後の進み方
-          : '<a class="btn pio-open-btn" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOの検索結果を見る（新しいタブ）</a>' +
-            '<p class="pio-after">確認したら、このページに戻って次のどちらかへお進みください。</p>' +
+          // 別タブだと戻れない方が多いため、同じタブで開き、ブラウザの「戻る」で帰ってきてもらう
+          : '<a class="btn pio-open-btn js-pio-same" href="' + esc(pioUrl) + '">PIOの検索結果を見る</a>' +
+            '<p class="pio-after">確認したら、ブラウザの「<b>戻る</b>」でこのページに戻り、次のどちらかへお進みください。</p>' +
             pioChoices(useFrame) + '</div>');
     }
     box.innerHTML = html;
@@ -499,6 +500,10 @@
     var specVisible = sp.top < vh - 120;
     hint.hidden = !(frameVisible && !specVisible);
   }
+  function scrollToPio() {
+    var box = $('#model-result');
+    if (!box.hidden) box.scrollIntoView({ block: 'start' });
+  }
   function goSpec() {
     var sec = $('#sec-spec');
     sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -601,7 +606,17 @@
     $('#toggle-eol').addEventListener('change', function (e) { state.showEol = e.target.checked; render(); });
     $('#share-btn').addEventListener('click', onShare);
     $('#model-result').addEventListener('click', function (e) {
-      if (e.target.closest('.js-go-spec')) goSpec();
+      if (e.target.closest('.js-go-spec')) { goSpec(); return; }
+      var same = e.target.closest('.js-pio-same');
+      if (same) {
+        e.preventDefault();
+        try { history.replaceState(null, '', buildShareUrl() + '#pio'); } catch (err) { /* 記録できなくても PIO へは進む */ }
+        location.href = same.href;
+      }
+    });
+    // 「戻る」で帰ってきたとき（ブラウザが前の画面をそのまま復元した場合）も PIO 案内の位置を見せる
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted && location.hash === '#pio') scrollToPio();
     });
     $('#next-hint').addEventListener('click', goSpec);
     window.addEventListener('scroll', updateNextHint, { passive: true });
@@ -616,6 +631,7 @@
       return pioLoad;
     }).then(function () {
       if (!applyFromUrl()) { syncQuestions(); render(); }
+      if (location.hash === '#pio') setTimeout(scrollToPio, 50);
     }).catch(function (err) {
       $('#result-body').innerHTML = '<div class="msg msg-bad"><p>商品データを読み込めませんでした。時間をおいて再読み込みしてください。</p></div>';
       $('#sec-result').hidden = false;
