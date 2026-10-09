@@ -37,7 +37,7 @@
     'ryzen-am5':  { ddr: '5', text: 'Ryzen 7000／8000／9000 シリーズ（デスクトップ用）は DDR5 専用です。「DDR5」を選択しました。' },
     'ryzen-old':  { ddr: '4', text: 'Ryzen 5000 シリーズ以前（デスクトップ用）は DDR4 です。「DDR4」を選択しました。' },
     'core-ultra': { ddr: '5', text: 'Core Ultra 搭載機は DDR5 です。「DDR5」を選択しました。ただし薄型ノートでは、メモリーが基板に直付け（LPDDR5／LPDDR5X）で増設できない機種が多くあります。タスクマネージャーでスロットの表示があるか確認してください。' },
-    'intel-12-14':{ ddr: null, text: '第12〜14世代の Core は、マザーボードによって DDR4 の機種と DDR5 の機種の両方があります。CPUだけでは判別できないため、メーカーの仕様表かタスクマネージャーの「速度」で確認してください（4800以上なら DDR5、3200以下ならほぼ DDR4）。' },
+    'intel-12-14':{ ddr: 'unknown', text: '第12〜14世代の Core は、マザーボードによって DDR4 の機種と DDR5 の機種の両方があり、CPUだけでは判別できません。下の「③ 速度」で、タスクマネージャーの「速度」と同じ数字を選んでください。数字から世代（DDR4／DDR5）も自動で判定します。' },
     'intel-8-11': { ddr: '4', text: '第8〜11世代の Core を搭載したパソコンの多くは DDR4 です。「DDR4」を選択しました。' }
   };
 
@@ -157,7 +157,26 @@
     });
   }
 
+  // 世代が「分からない」ときは DDR4・DDR5 の速度をまとめて出す（数字から世代を判定できるため）
+  // DDR4 は〜4400程度、DDR5 は 4800〜 で数字が重ならない
+  function buildSpeedChoicesBoth() {
+    var label = function (t) {
+      return '<p style="flex-basis:100%;margin:6px 0 0;font-size:13px;color:var(--muted)">' + t + '</p>';
+    };
+    var btn = function (g, v) {
+      var text = v === 'over' ? (g === '4' ? '3600〜4400' : '6000以上') : v;
+      return '<button type="button" data-v="' + g + ':' + v + '" aria-pressed="false">' + text +
+        '<small>DDR' + g + '</small></button>';
+    };
+    $('#speed-choices').innerHTML =
+      label('タスクマネージャーの「速度」が 4800 以上なら DDR5') +
+      [4800, 5200, 5600, 'over'].map(function (v) { return btn('5', v); }).join('') +
+      label('3200 以下（またはそれに近い数字）なら DDR4') +
+      [2133, 2400, 2666, 2933, 3200, 'over'].map(function (v) { return btn('4', v); }).join('');
+  }
+
   function buildSpeedChoices() {
+    if (state.ddr === 'unknown') { buildSpeedChoicesBoth(); return; }
     var wrap = $('#speed-choices');
     var list = SPEEDS[state.ddr] || [];
     wrap.innerHTML = list.map(function (v) {
@@ -192,6 +211,12 @@
       if (state.ddr !== v) { state.speed = null; state.cap = null; }
       state.ddr = v;
     } else if (q === 'speed') {
+      if (v.indexOf(':') > 0) {          // 世代不明からの選択（例 5:5600）
+        var gv = v.split(':');
+        state.ddr = gv[0];
+        v = gv[1];
+        state.cap = null;
+      }
       state.speed = (v === 'over' || v === 'unknown') ? v : Number(v);
     } else if (q === 'cap') {
       state.cap = v ? Number(v) : null;
@@ -221,7 +246,7 @@
     var specOk = (state.form === 'DIMM' || state.form === 'SODIMM') && (state.ddr === '4' || state.ddr === '5');
     var qs = $('.q[data-q="speed"]');
     var qc = $('.q[data-q="cap"]');
-    qs.hidden = !(state.ddr === '4' || state.ddr === '5');
+    qs.hidden = !(state.ddr === '4' || state.ddr === '5' || state.ddr === 'unknown');
     if (!qs.hidden) {
       buildSpeedChoices();
       setChoice('speed', state.speed == null ? '' : state.speed);
@@ -263,10 +288,14 @@
     if (!state.ddr || state.ddr === 'unknown') missing.push('メモリーの世代（DDR4／DDR5）');
     if (missing.length) {
       var unknownMsg = (state.form === 'unknown' || state.ddr === 'unknown');
+      var how = [];
+      if (state.form === 'unknown') how.push('<b>パソコンの形</b>は、タスクマネージャーの「フォーム ファクター」欄（DIMM＝デスクトップ、SODIMM＝ノート・小型）で分かります。');
+      if (state.ddr === 'unknown') how.push('<b>世代</b>は、「③ 速度」でタスクマネージャーの「速度」と同じ数字を選ぶと自動で判定します。「CPUから推定する」でも確認できます。');
       body.innerHTML = '<div class="msg ' + (unknownMsg ? 'msg-warn' : 'msg-info') + '"><p class="msg-title">' +
-        (unknownMsg ? 'まずは調べ方をご案内します' : 'あと少しです') + '</p>' +
-        '<p>' + missing.join('・') + 'を選ぶと、使える商品を表示します。</p>' +
-        (unknownMsg ? '<p>分からない場合は、上の「<b>タスクマネージャーで調べる方法</b>」を開いてください。パソコンの形はフォームファクター欄、世代は「CPUから推定する」で確認できます。</p>' : '') +
+        (unknownMsg ? '調べ方をご案内します' : 'あと少しです') + '</p>' +
+        '<p>' + missing.join('・') + 'が決まると、使える商品を表示します。</p>' +
+        how.map(function (t) { return '<p>' + t + '</p>'; }).join('') +
+        (unknownMsg ? '<p>タスクマネージャーの開き方は、上の「<b>タスクマネージャーで調べる方法</b>」をご覧ください。</p>' : '') +
         '</div>';
       if (unknownMsg) $('#tm-guide').open = true;
       if (state.ddr === 'unknown') $('.mini-guide').open = true;
