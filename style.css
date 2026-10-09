@@ -258,3 +258,26 @@ kbd { border: 1px solid #c8ccd6; border-bottom-width: 2px; border-radius: 4px; p
 @media (max-width: 640px) {
   .sku-list { grid-template-columns: 1fr; }
 }
+
+/* ---------- 共有ボタン・商品ページボタン・画像リンク ---------- */
+.result-tools { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--navy); background: #fff; color: var(--navy);
+  border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.share-btn:hover { background: var(--navy); color: #fff; }
+.share-feedback { margin: -4px 0 10px; font-size: 13px; color: var(--muted); text-align: right; }
+.share-feedback.ok { color: var(--ok); font-weight: 700; }
+.share-url { width: 100%; margin: 0 0 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+.series-btn {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; background: var(--navy); color: #fff;
+  text-decoration: none; font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 8px; white-space: nowrap;
+}
+.series-btn span { font-size: 16px; line-height: 1; }
+.series-btn:hover { background: var(--navy-2); }
+a.series-img { transition: border-color .15s, box-shadow .15s; }
+a.series-img:hover { border-color: var(--navy-2); box-shadow: 0 2px 8px rgba(29,43,79,.12); }
+@media (max-width: 640px) {
+  .result-tools { width: 100%; justify-content: space-between; }
+  .share-feedback { text-align: left; }
+}

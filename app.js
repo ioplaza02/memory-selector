@@ -122,7 +122,10 @@
   // ===== ① 型番で探す =====
   function onModelSubmit(e) {
     e.preventDefault();
-    var raw = $('#model-input').value.trim();
+    runModel($('#model-input').value.trim());
+  }
+
+  function runModel(raw) {
     var box = $('#model-result');
     if (!raw) { box.hidden = true; state.bto = null; state.pioMatch = null; render(); return; }
 
@@ -376,7 +379,8 @@
     var spec = ffLabel(s.formFactor) + '／DDR' + s.ddr + '-' + s.speed;
     var rows = s.items.map(function (p) { return renderSkuRow(p, s.business); }).join('');
     var img = s.image
-      ? '<div class="series-img"><img src="' + esc(s.image) + '" alt="' + esc(s.series) + '" loading="lazy" onerror="this.parentNode.hidden=true"></div>'
+      ? '<a class="series-img" href="' + esc(s.url) + '" target="_blank" rel="noopener" title="' + esc(s.series) + ' の商品ページを開く">' +
+        '<img src="' + esc(s.image) + '" alt="' + esc(s.series) + '" loading="lazy" onerror="this.parentNode.hidden=true"></a>'
       : '';
     return '<article class="series rank-' + j.rank + (s.buyable ? '' : ' unbuyable') + '">' +
       '<div class="series-head">' +
@@ -384,7 +388,7 @@
         '<p class="series-name">' + esc(s.series) + '</p>' +
         (s.business ? '<span class="badge b-biz">法人様専用</span>' : '') +
         (s.warranty ? '<span class="badge b-warranty">' + esc(s.warranty) + '</span>' : '') + '</div>' +
-        '<a class="series-link" href="' + esc(s.url) + '" target="_blank" rel="noopener">商品ページ ›</a>' +
+        '<a class="series-btn" href="' + esc(s.url) + '" target="_blank" rel="noopener">商品ページを見る<span aria-hidden="true">›</span></a>' +
       '</div>' +
       '<div class="series-main">' + img +
         '<div class="series-info"><p class="series-spec">' + esc(spec) + '</p>' +
@@ -439,6 +443,90 @@
     return html;
   }
 
+  // ===== 共有URL =====
+  // 選んだ条件を URL のパラメーターにする（例 ?form=SODIMM&ddr=5&speed=5200&cap=16&eol=1&model=RL7C-R45-5N）
+  var ALLOWED = {
+    form: ['DIMM', 'SODIMM', 'unknown'],
+    ddr: ['5', '4', 'old', 'onboard', 'unknown']
+  };
+  function buildShareUrl() {
+    var q = new URLSearchParams();
+    var model = $('#model-result').hidden ? '' : $('#model-input').value.trim();
+    if (model) q.set('model', model);
+    if (state.form) q.set('form', state.form);
+    if (state.ddr) q.set('ddr', state.ddr);
+    if (state.speed != null) q.set('speed', String(state.speed));
+    if (state.cap) q.set('cap', String(state.cap));
+    if (state.showEol) q.set('eol', '1');
+    var cpu = $('#cpu-select').value;
+    if (cpu) q.set('cpu', cpu);
+    return location.origin + location.pathname + (q.toString() ? '?' + q.toString() : '');
+  }
+
+  function applyFromUrl() {
+    var q = new URLSearchParams(location.search);
+    if (!q.toString()) return false;
+    var v;
+    if ((v = q.get('form')) && ALLOWED.form.indexOf(v) >= 0) state.form = v;
+    if ((v = q.get('ddr')) && ALLOWED.ddr.indexOf(v) >= 0) state.ddr = v;
+    if ((v = q.get('speed'))) {
+      if (v === 'over' || v === 'unknown') state.speed = v;
+      else if (/^\d{4}$/.test(v)) state.speed = Number(v);
+    }
+    if ((v = q.get('cap')) && /^\d{1,3}$/.test(v)) state.cap = Number(v);
+    if (q.get('eol') === '1') { state.showEol = true; $('#toggle-eol').checked = true; }
+    if ((v = q.get('cpu')) && CPU_HINTS[v]) {
+      $('#cpu-select').value = v;
+      $('#cpu-hint').textContent = CPU_HINTS[v].text;
+      $('#cpu-hint').hidden = false;
+      $('.mini-guide').open = true;
+    }
+    syncQuestions();
+    if ((v = q.get('model'))) {
+      v = v.slice(0, 60);
+      $('#model-input').value = v;
+      runModel(v);           // 中で render() まで行う
+    } else {
+      render();
+    }
+    return true;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+
+  function onShare() {
+    var url = buildShareUrl();
+    var fb = $('#share-feedback');
+    var box = $('#share-url');
+    box.value = url;
+    copyText(url).then(function () {
+      fb.textContent = 'URLをコピーしました';
+      fb.className = 'share-feedback ok';
+      box.hidden = true;
+    }).catch(function () {
+      // コピーできない環境では URL を表示して手動でコピーしてもらう
+      fb.textContent = '下のURLを選択してコピーしてください';
+      fb.className = 'share-feedback';
+      box.hidden = false;
+      box.select();
+    });
+    fb.hidden = false;
+    clearTimeout(onShare.t);
+    onShare.t = setTimeout(function () { if (box.hidden) fb.hidden = true; }, 3000);
+  }
+
   // ===== 起動 =====
   function init() {
     initGate();
@@ -446,19 +534,22 @@
     $('#sec-spec').addEventListener('click', onChoice);
     $('#cpu-select').addEventListener('change', onCpu);
     $('#toggle-eol').addEventListener('change', function (e) { state.showEol = e.target.checked; render(); });
+    $('#share-btn').addEventListener('click', onShare);
+
+    var pioLoad = loadJSON('data/pio-memory.json').then(function (d) { PIO = d || { entries: [] }; })
+      .catch(function () { PIO = { entries: [] }; });
 
     loadJSON('data/products.json').then(function (d) {
       DATA = d;
       showUpdated();
-      syncQuestions();
-      render();
+      return pioLoad;
+    }).then(function () {
+      if (!applyFromUrl()) { syncQuestions(); render(); }
     }).catch(function (err) {
       $('#result-body').innerHTML = '<div class="msg msg-bad"><p>商品データを読み込めませんでした。時間をおいて再読み込みしてください。</p></div>';
       $('#sec-result').hidden = false;
       console.error(err);
     });
-    loadJSON('data/pio-memory.json').then(function (d) { PIO = d || { entries: [] }; })
-      .catch(function () { PIO = { entries: [] }; });
   }
 
   document.addEventListener('DOMContentLoaded', init);
