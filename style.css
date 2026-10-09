@@ -281,3 +281,15 @@ a.series-img:hover { border-color: var(--navy-2); box-shadow: 0 2px 8px rgba(29,
   .result-tools { width: 100%; justify-content: space-between; }
   .share-feedback { text-align: left; }
 }
+
+/* ② へ移動したときに一瞬光らせて、どこに来たか分かるようにする */
+.card.flash { animation: flash 1.6s ease-out; }
+@keyframes flash { 0% { box-shadow: 0 0 0 4px rgba(217,130,43,.55); } 100% { box-shadow: 0 0 0 0 rgba(217,130,43,0); } }
+button.btn { font-family: inherit; cursor: pointer; }
+
+/* ---------- PIO の結果を枠内に表示 ---------- */
+.pio-frame-wrap { margin: 12px 0 10px; border: 1px solid #c9d6ee; border-radius: 10px; overflow: hidden; background: #fff; }
+.pio-frame { display: block; width: 100%; height: 460px; border: 0; background: #fff; }
+.pio-guide { font-size: 14px; }
+@media (max-width: 640px) { .pio-frame { height: 400px; } }
+.pio-box .actions + .note { margin-top: 10px; }

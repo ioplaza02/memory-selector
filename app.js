@@ -152,15 +152,18 @@
           ? '<p class="note">型番の形から判断しています。メーカー製パソコンの場合は <a href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOで検索</a> もお試しください。</p>'
           : '') + '</div>';
     } else {
-      html += '<div class="msg msg-info"><p class="msg-title">対応表（PIO）で確認できます</p>' +
-        '<p>メーカー製パソコンの場合、I-O DATAの対応表（PIO）に載っている可能性があります。下のボタンから検索結果を開いてください。</p>' +
-        '<p>PIOで見つからなかった場合は、下の「<b>② スペックで探す</b>」へお進みください。</p>' +
-        (pioKw !== raw ? '<p class="note">メーカー名（' + esc(raw.slice(0, raw.length - pioKw.length).trim()) + '）を除いた「' + esc(pioKw) + '」で検索します。</p>' : '') +
+      html += '<div class="msg msg-info pio-box"><p class="msg-title">対応表（PIO）の検索結果</p>' +
+        '<p>メーカー製パソコンの場合、I-O DATAの対応表（PIO）に載っていることがあります。下の枠に「<b>' + esc(pioKw) + '</b>」の検索結果を表示しています。</p>' +
+        (pioKw !== raw ? '<p class="note">メーカー名（' + esc(raw.slice(0, raw.length - pioKw.length).trim()) + '）を除いて検索しています。</p>' : '') +
         (J.normalizeModel(raw).length < 5
-          ? '<p class="note">入力された型番が短いため、検索結果が0件になったり、関係のない機種がたくさん出たりすることがあります。型番はパソコン本体の裏面や側面のシールなどで確認して、できるだけ最後まで入力してください。</p>'
+          ? '<p class="note">入力された型番が短いため、関係のない機種がたくさん表示されることがあります。型番はパソコン本体の裏面や側面のシールなどで確認して、できるだけ最後まで入力してください。</p>'
           : '') +
-        '<div class="actions"><a class="btn" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOで「' + esc(pioKw) + '」を検索する</a>' +
-        '<button type="button" class="btn btn-outline js-go-spec">0件だった → ② スペックで探す</button></div></div>';
+        // PIO の結果ページをそのまま枠の中に表示する（こちらから中身は読み取らない）
+        '<div class="pio-frame-wrap"><iframe class="pio-frame" src="' + esc(pioUrl) + '" title="PIO の検索結果" loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe></div>' +
+        '<p class="pio-guide"><b>「該当情報なし」と表示された場合</b>は、下のボタンから「② スペックで探す」へお進みください。お使いのパソコンが表示された場合は、機種名をクリックすると対応メモリーを確認できます。</p>' +
+        '<div class="actions"><button type="button" class="btn js-go-spec">② スペックで探す へ進む</button>' +
+        '<a class="btn btn-outline" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">検索結果を新しいタブで開く</a></div>' +
+        '<p class="note">枠の中に何も表示されない場合は、「検索結果を新しいタブで開く」からご確認ください。</p></div>';
     }
     box.innerHTML = html;
     box.hidden = false;
