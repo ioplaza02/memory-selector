@@ -55,25 +55,26 @@
       <div class="guide-body">
         <ol class="guide-steps">
           <li>キーボードの <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Esc</kbd> を同時に押して「タスクマネージャー」を開きます</li>
-          <li>左側（または上部）の「パフォーマンス」を選び、「メモリ」をクリックします</li>
-          <li>右下に表示される3つの項目を確認します</li>
+          <li>画面左の <span class="step-mark">1</span>「パフォーマンス」を選び、<span class="step-mark">2</span>「メモリ」をクリックします</li>
+          <li>画面の右上（<span class="mark">A</span>）と、グラフの下（<span class="mark">B</span>〜<span class="mark">D</span>）を確認します</li>
         </ol>
-        <div class="tm-mock" aria-label="タスクマネージャーのメモリ画面のイメージ">
-          <div class="tm-head"><span>メモリ</span><span>16.0 GB</span></div>
-          <div class="tm-graph" aria-hidden="true"></div>
-          <dl class="tm-rows">
-            <div class="hl"><dt>速度:</dt><dd>5600 MT/s</dd><span class="tag">A</span></div>
-            <div class="hl"><dt>使用中のスロット:</dt><dd>2/2</dd><span class="tag">B</span></div>
-            <div class="hl"><dt>フォーム ファクター:</dt><dd>SODIMM</dd><span class="tag">C</span></div>
-            <div><dt>ハードウェア予約済み:</dt><dd>396 MB</dd></div>
-          </dl>
-        </div>
+        <figure class="tm-shot">
+          <img src="images/taskmanager-win11.png" width="1103" height="818" loading="lazy"
+               alt="Windows 11 のタスクマネージャーのメモリ画面。右上に容量と世代（16.0 GB DDR5）、グラフの下に速度・スロットの使用・フォーム ファクターが表示される">
+          <figcaption>Windows 11 の画面例（ウィンドウの大きさによって、項目の位置は少し変わります）</figcaption>
+        </figure>
+        <figure class="tm-shot tm-detail">
+          <img src="images/taskmanager-win11-detail.png" width="799" height="182" loading="lazy"
+               alt="グラフの下の拡大：速度 5200 MT/秒、スロットの使用 2/2、フォーム ファクター SODIMM">
+          <figcaption>グラフの下（B〜D）の拡大</figcaption>
+        </figure>
         <ul class="tm-legend">
-          <li><b>A 速度</b>：メモリーの速さです（「MHz」と表示される場合もあります）。下の「③ 速度」で同じ数字を選びます。</li>
-          <li><b>B 使用中のスロット</b>：「2/2」なら差し込み口が全部埋まっているため、<em>増設ではなく交換</em>になります。「1/2」なら1つ空いています。</li>
-          <li><b>C フォーム ファクター</b>：「DIMM」ならデスクトップ用、「SODIMM」ならノート・小型用です。これら以外の表示（例：Row of chips）や、スロットが表示されない場合は、メモリーが基板に直付けされていて<em>増設できない</em>可能性が高いです。</li>
+          <li><span class="mark">A</span><b>容量と世代</b>：「16.0 GB <b>DDR5</b>」のように表示されます。下の「② メモリーの世代」で同じものを選びます。</li>
+          <li><span class="mark">B</span><b>速度</b>：メモリーの速さです（「MT/秒」のほか、「MHz」と表示される場合もあります）。下の「③ 速度」で同じ数字を選びます。</li>
+          <li><span class="mark">C</span><b>スロットの使用</b>：「2/2」なら差し込み口が全部埋まっているため、<em>増設ではなく交換</em>になります。「1/2」なら1つ空いています。</li>
+          <li><span class="mark">D</span><b>フォーム ファクター</b>：「DIMM」ならデスクトップ用、「SODIMM」ならノート・小型用です。これ以外の表示（例：Row of chips）や、スロットの項目が表示されない場合は、メモリーが基板に直付けされていて<em>増設できない</em>可能性が高いです。</li>
         </ul>
-        <p class="note">※ タスクマネージャーでは DDR4 / DDR5 の区別は表示されません。速度の数字が 4800 以上なら DDR5、3200 以下ならほぼ DDR4 です（下の「CPUから推定する」も参考にしてください）。</p>
+        <p class="note">※ 項目名は Windows のバージョンによって少し異なります（例：「スロットの使用」が「使用中のスロット」）。また、Windows 10 や一部のパソコンでは、A の世代（DDR4／DDR5）が表示されないことがあります。その場合は、速度の数字が 4800 以上なら DDR5、3200 以下ならほぼ DDR4 です。</p>
       </div>
     </details>
 
@@ -87,7 +88,7 @@
     </div>
 
     <div class="q" data-q="ddr">
-      <p class="q-title"><span class="qn">②</span>メモリーの世代</p>
+      <p class="q-title"><span class="qn">②</span>メモリーの世代<span class="q-sub">タスクマネージャー右上の「16.0 GB <b>DDR5</b>」の部分</span></p>
       <div class="choices" role="group" aria-label="メモリーの世代">
         <button type="button" data-v="5">DDR5</button>
         <button type="button" data-v="4">DDR4</button>

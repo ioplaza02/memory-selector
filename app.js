@@ -290,7 +290,7 @@
       var unknownMsg = (state.form === 'unknown' || state.ddr === 'unknown');
       var how = [];
       if (state.form === 'unknown') how.push('<b>パソコンの形</b>は、タスクマネージャーの「フォーム ファクター」欄（DIMM＝デスクトップ、SODIMM＝ノート・小型）で分かります。');
-      if (state.ddr === 'unknown') how.push('<b>世代</b>は、「③ 速度」でタスクマネージャーの「速度」と同じ数字を選ぶと自動で判定します。「CPUから推定する」でも確認できます。');
+      if (state.ddr === 'unknown') how.push('<b>世代</b>は、タスクマネージャー右上の容量の横（例：16.0 GB <b>DDR5</b>）に表示されます。表示が無い場合は、「③ 速度」でタスクマネージャーの「速度」と同じ数字を選ぶと自動で判定します。');
       body.innerHTML = '<div class="msg ' + (unknownMsg ? 'msg-warn' : 'msg-info') + '"><p class="msg-title">' +
         (unknownMsg ? '調べ方をご案内します' : 'あと少しです') + '</p>' +
         '<p>' + missing.join('・') + 'が決まると、使える商品を表示します。</p>' +
