@@ -1,0 +1,5 @@
+{
+  "updatedAt": null,
+  "note": "PIOのメモリー対応データ（社内提供）を差し込む受け口。entries: [{maker, model, bodyType, release, skus:[...]}]",
+  "entries": []
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>メモリーセレクター</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- パスワード画面（window.prompt は環境によって無効化されるため、画面内フォームで実装） -->
+<div id="gate" class="gate">
+  <form id="gate-form" class="gate-box" autocomplete="off">
+    <p class="gate-title">メモリーセレクター</p>
+    <label for="gate-input">パスワードを入力してください</label>
+    <input id="gate-input" type="password" required>
+    <button type="submit">表示する</button>
+    <p id="gate-error" class="gate-error" hidden>パスワードが違います</p>
+  </form>
+</div>
+
+<div id="app" hidden>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div>
+      <p class="brand">I-O DATA</p>
+      <h1>メモリーセレクター</h1>
+      <p class="lead">お使いのパソコンに増設できる I-O DATA 製メモリーを探します</p>
+    </div>
+    <p id="updated" class="updated"></p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ① 型番で探す -->
+  <section class="card" id="sec-model">
+    <h2><span class="num">1</span>パソコンの型番で探す<span class="opt">任意</span></h2>
+    <p class="hint">メーカー製パソコン（NEC・富士通・Dynabookなど）は、型番で対応表（PIO）に載っていることがあります。</p>
+    <form id="model-form" class="model-form">
+      <input id="model-input" type="text" placeholder="例：MJ54/HU、GALLERIA RL7C-R45-4" aria-label="パソコンの型番">
+      <button type="submit">調べる</button>
+    </form>
+    <div id="model-result" class="model-result" hidden></div>
+  </section>
+
+  <!-- ② スペックで探す -->
+  <section class="card" id="sec-spec">
+    <h2><span class="num">2</span>スペックで探す</h2>
+    <p class="hint">カスタムメイド（BTO）パソコンや、型番で見つからない場合はこちら。メーカーの仕様表か、Windowsの「タスクマネージャー」で分かる内容を選んでください。</p>
+
+    <details class="guide" id="tm-guide">
+      <summary>タスクマネージャーで調べる方法（仕様表が手元に無い方へ）</summary>
+      <div class="guide-body">
+        <ol class="guide-steps">
+          <li>キーボードの <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Esc</kbd> を同時に押して「タスクマネージャー」を開きます</li>
+          <li>左側（または上部）の「パフォーマンス」を選び、「メモリ」をクリックします</li>
+          <li>右下に表示される3つの項目を確認します</li>
+        </ol>
+        <div class="tm-mock" aria-label="タスクマネージャーのメモリ画面のイメージ">
+          <div class="tm-head"><span>メモリ</span><span>16.0 GB</span></div>
+          <div class="tm-graph" aria-hidden="true"></div>
+          <dl class="tm-rows">
+            <div class="hl"><dt>速度:</dt><dd>5600 MT/s</dd><span class="tag">A</span></div>
+            <div class="hl"><dt>使用中のスロット:</dt><dd>2/2</dd><span class="tag">B</span></div>
+            <div class="hl"><dt>フォーム ファクター:</dt><dd>SODIMM</dd><span class="tag">C</span></div>
+            <div><dt>ハードウェア予約済み:</dt><dd>396 MB</dd></div>
+          </dl>
+        </div>
+        <ul class="tm-legend">
+          <li><b>A 速度</b>：メモリーの速さです（「MHz」と表示される場合もあります）。下の「③ 速度」で同じ数字を選びます。</li>
+          <li><b>B 使用中のスロット</b>：「2/2」なら差し込み口が全部埋まっているため、<em>増設ではなく交換</em>になります。「1/2」なら1つ空いています。</li>
+          <li><b>C フォーム ファクター</b>：「DIMM」ならデスクトップ用、「SODIMM」ならノート・小型用です。これら以外の表示（例：Row of chips）や、スロットが表示されない場合は、メモリーが基板に直付けされていて<em>増設できない</em>可能性が高いです。</li>
+        </ul>
+        <p class="note">※ タスクマネージャーでは DDR4 / DDR5 の区別は表示されません。速度の数字が 4800 以上なら DDR5、3200 以下ならほぼ DDR4 です（下の「CPUから推定する」も参考にしてください）。</p>
+      </div>
+    </details>
+
+    <div class="q" data-q="form">
+      <p class="q-title"><span class="qn">①</span>パソコンの形</p>
+      <div class="choices" role="group" aria-label="パソコンの形">
+        <button type="button" data-v="DIMM">デスクトップ<small>DIMM</small></button>
+        <button type="button" data-v="SODIMM">ノート・小型デスクトップ<small>S.O.DIMM</small></button>
+        <button type="button" data-v="unknown">分からない</button>
+      </div>
+    </div>
+
+    <div class="q" data-q="ddr">
+      <p class="q-title"><span class="qn">②</span>メモリーの世代</p>
+      <div class="choices" role="group" aria-label="メモリーの世代">
+        <button type="button" data-v="5">DDR5</button>
+        <button type="button" data-v="4">DDR4</button>
+        <button type="button" data-v="old">DDR3以前</button>
+        <button type="button" data-v="onboard">オンボード／増設不可</button>
+        <button type="button" data-v="unknown">分からない</button>
+      </div>
+      <details class="mini-guide">
+        <summary>CPUから推定する</summary>
+        <div class="mini-guide-body">
+          <label for="cpu-select">お使いのCPUの種類</label>
+          <select id="cpu-select">
+            <option value="">選んでください</option>
+            <option value="ryzen-am5">AMD Ryzen 7000／8000／9000 シリーズ（デスクトップ）</option>
+            <option value="ryzen-old">AMD Ryzen 5000 シリーズ以前（デスクトップ）</option>
+            <option value="core-ultra">Intel Core Ultra（シリーズ1・2）</option>
+            <option value="intel-12-14">Intel 第12〜14世代 Core（例：i7-13700、i5-14400）</option>
+            <option value="intel-8-11">Intel 第8〜11世代 Core（例：i7-10700、i5-11400）</option>
+          </select>
+          <p id="cpu-hint" class="cpu-hint" hidden></p>
+        </div>
+      </details>
+    </div>
+
+    <div class="q" data-q="speed" hidden>
+      <p class="q-title"><span class="qn">③</span>速度<span class="q-sub">メーカー仕様表の「DDR5-<b>5600</b>」「PC5-44800」や、タスクマネージャーの数字</span></p>
+      <div class="choices" role="group" aria-label="速度" id="speed-choices"></div>
+    </div>
+
+    <div class="q" data-q="cap" hidden>
+      <p class="q-title"><span class="qn">④</span>1枚あたりの容量<span class="q-sub">任意</span></p>
+      <div class="choices" role="group" aria-label="1枚あたりの容量" id="cap-choices"></div>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card results" id="sec-result" hidden>
+    <div class="result-head">
+      <h2>結果</h2>
+      <label class="toggle">
+        <input type="checkbox" id="toggle-eol">
+        <span class="toggle-ui" aria-hidden="true"></span>
+        生産終了品も表示
+      </label>
+    </div>
+    <div id="result-body"></div>
+  </section>
+
+  <footer class="site-footer">
+    <p>本セレクターは DDR4 以降の世代のメモリーを対象としています。DDR3 以前のパソコンは対象外です。</p>
+    <p>商品情報は <a href="https://www.iodata.jp/product/memory/" target="_blank" rel="noopener">I-O DATA 公式サイト</a> の掲載内容をもとに自動更新しています。</p>
+  </footer>
+</main>
+</div>
+
+<script src="judge.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
