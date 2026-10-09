@@ -132,7 +132,8 @@
     state.bto = J.detectBTO(raw);
     state.pioMatch = findPio(raw);
 
-    var pioUrl = PIO_SEARCH_URL.replace('{maker}', '-1').replace('{kw}', encodeURIComponent(raw));
+    var pioKw = stripMakerName(raw);
+    var pioUrl = PIO_SEARCH_URL.replace('{maker}', '-1').replace('{kw}', encodeURIComponent(pioKw));
     var html = '';
 
     if (state.pioMatch) {
@@ -154,15 +155,25 @@
       html += '<div class="msg msg-info"><p class="msg-title">対応表（PIO）で確認できます</p>' +
         '<p>メーカー製パソコンの場合、I-O DATAの対応表（PIO）に載っている可能性があります。下のボタンから検索結果を開いてください。</p>' +
         '<p>PIOで見つからなかった場合は、下の「<b>② スペックで探す</b>」へお進みください。</p>' +
+        (pioKw !== raw ? '<p class="note">メーカー名（' + esc(raw.slice(0, raw.length - pioKw.length).trim()) + '）を除いた「' + esc(pioKw) + '」で検索します。</p>' : '') +
         (J.normalizeModel(raw).length < 5
           ? '<p class="note">入力された型番が短いため、検索結果が0件になったり、関係のない機種がたくさん出たりすることがあります。型番はパソコン本体の裏面や側面のシールなどで確認して、できるだけ最後まで入力してください。</p>'
           : '') +
-        '<div class="actions"><a class="btn" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOで「' + esc(raw) + '」を検索する</a>' +
-        '<a class="btn btn-outline" href="' + PIO_TOP_URL + '" target="_blank" rel="noopener">PIOの検索画面を開く</a></div></div>';
+        '<div class="actions"><a class="btn" href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOで「' + esc(pioKw) + '」を検索する</a>' +
+        '<button type="button" class="btn btn-outline js-go-spec">0件だった → ② スペックで探す</button></div></div>';
     }
     box.innerHTML = html;
     box.hidden = false;
     render();
+  }
+
+  // 先頭のメーカー名だけを外す（例「HP 14-dq5000」→「14-dq5000」）。
+  // dynabook・Inspiron などのシリーズ名は登録名に含まれることがあるため外さない。
+  var MAKER_WORDS = /^(HP|Hewlett[\s-]?Packard|日本HP|NEC|FUJITSU|富士通|DELL|デル|Lenovo|レノボ|ASUS|Acer|エイサー|Panasonic|パナソニック|Microsoft|マイクロソフト|TOSHIBA|東芝|MSI|Apple|アップル)[\s　]+/i;
+  function stripMakerName(raw) {
+    var s = raw, prev;
+    do { prev = s; s = s.replace(MAKER_WORDS, ''); } while (s !== prev);
+    return s.trim() || raw;
   }
 
   // 社内提供データ（data/pio-memory.json）があれば、型番を照合する
@@ -535,6 +546,13 @@
     $('#cpu-select').addEventListener('change', onCpu);
     $('#toggle-eol').addEventListener('change', function (e) { state.showEol = e.target.checked; render(); });
     $('#share-btn').addEventListener('click', onShare);
+    $('#model-result').addEventListener('click', function (e) {
+      if (!e.target.closest('.js-go-spec')) return;
+      var sec = $('#sec-spec');
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      sec.classList.add('flash');
+      setTimeout(function () { sec.classList.remove('flash'); }, 1600);
+    });
 
     var pioLoad = loadJSON('data/pio-memory.json').then(function (d) { PIO = d || { entries: [] }; })
       .catch(function () { PIO = { entries: [] }; });
