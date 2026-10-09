@@ -94,8 +94,29 @@
   function ffLabel(ff) { return ff === 'DIMM' ? 'デスクトップ用（DIMM）' : 'ノート・小型用（S.O.DIMM）'; }
   function statusBadge(st) {
     if (st === 'limited') return '<span class="st st-limited">在庫限り</span>';
+    if (st === 'suspended') return '<span class="st st-suspended">一時受注停止</span>';
     if (st === 'discontinued') return '<span class="st st-discontinued">生産終了</span>';
     return '';
+  }
+  function yen(n) { return '¥' + Number(n).toLocaleString('ja-JP'); }
+
+  // 型番1行分：型番（大）→ 税込価格（税抜）→ JAN、左に容量
+  function renderSkuRow(p, business) {
+    var price;
+    if (p.priceTaxIn) {
+      price = '<p class="sku-price"><span class="p-in">' + yen(p.priceTaxIn) + '</span>' +
+        (p.priceTaxEx ? '<span class="p-ex">（税抜 ' + yen(p.priceTaxEx) + '）</span>' : '') + '</p>';
+    } else {
+      price = '<p class="sku-price"><span class="p-open">オープン価格</span><span class="p-ex">' +
+        (business ? '（価格はお取引先の販売店へお問い合わせください）' : '（販売店・ioPLAZAでご確認ください）') + '</span></p>';
+    }
+    return '<div class="sku-row' + (p.status === 'discontinued' ? ' is-discontinued' : '') + '">' +
+      (p.capacityGB ? '<div class="cap-pill"><b>' + p.capacityGB + '</b>GB</div>' : '<div class="cap-pill">-</div>') +
+      '<div class="sku-body">' +
+        '<p class="sku-code">' + esc(p.sku) + statusBadge(p.status) + '</p>' +
+        price +
+        (p.jan ? '<p class="sku-jan">JAN：' + esc(p.jan) + '</p>' : '') +
+      '</div></div>';
   }
 
   // ===== ① 型番で探す =====
@@ -348,29 +369,33 @@
   function renderSeries(s) {
     var j = s.judge;
     var spec = ffLabel(s.formFactor) + '／DDR' + s.ddr + '-' + s.speed;
-    var skus = s.items.map(function (p) {
-      return '<span class="sku' + (p.status === 'discontinued' ? ' is-discontinued' : '') + '">' +
-        '<span class="cap">' + p.capacityGB + 'GB</span><code>' + esc(p.sku) + '</code>' + statusBadge(p.status) + '</span>';
-    }).join('');
+    var rows = s.items.map(function (p) { return renderSkuRow(p, s.business); }).join('');
+    var img = s.image
+      ? '<div class="series-img"><img src="' + esc(s.image) + '" alt="' + esc(s.series) + '" loading="lazy" onerror="this.parentNode.hidden=true"></div>'
+      : '';
     return '<article class="series rank-' + j.rank + (s.buyable ? '' : ' unbuyable') + '">' +
-      '<div class="series-top"><span class="badge b-' + j.rank + '">' + esc(j.label) + '</span>' +
-      '<p class="series-name">' + esc(s.series) + '</p>' +
-      (s.business ? '<span class="badge b-biz">法人様専用</span>' : '') +
-      (s.warranty ? '<span class="badge b-warranty">' + esc(s.warranty) + '</span>' : '') + '</div>' +
-      '<a class="series-link" href="' + esc(s.url) + '" target="_blank" rel="noopener">商品ページ ›</a>' +
-      '<p class="series-spec">' + esc(spec) + '</p>' +
-      '<p class="series-text">' + esc(j.text) + '</p>' +
-      '<div class="skus">' + skus + '</div>' +
+      '<div class="series-head">' +
+        '<div class="series-top"><span class="badge b-' + j.rank + '">' + esc(j.label) + '</span>' +
+        '<p class="series-name">' + esc(s.series) + '</p>' +
+        (s.business ? '<span class="badge b-biz">法人様専用</span>' : '') +
+        (s.warranty ? '<span class="badge b-warranty">' + esc(s.warranty) + '</span>' : '') + '</div>' +
+        '<a class="series-link" href="' + esc(s.url) + '" target="_blank" rel="noopener">商品ページ ›</a>' +
+      '</div>' +
+      '<div class="series-main">' + img +
+        '<div class="series-info"><p class="series-spec">' + esc(spec) + '</p>' +
+        '<p class="series-text">' + esc(j.text) + '</p></div>' +
+      '</div>' +
+      '<div class="sku-list">' + rows + '</div>' +
       '</article>';
   }
 
   function renderTips(pc, list) {
     var tips = [];
-    tips.push('<b>2枚1組がおすすめです。</b>同じ容量・同じ規格のメモリーを2枚使うと「デュアルチャネル」で動作し、性能を引き出せます。');
-    tips.push('<b>空きスロットを確認してください。</b>タスクマネージャーの「使用中のスロット」が「2/2」のように埋まっている場合は、増設ではなく今のメモリーとの<b>交換</b>になります。');
+    tips.push('<b>交換するなら、2枚とも新しいメモリーにそろえるのがおすすめです。</b>メモリーは、同じ容量・同じ規格のものを2枚1組で使うと「デュアルチャネル」という仕組みで本来の速さを発揮します。もともと入っているメモリーを1枚残したまま、新しいメモリーを1枚だけ足したり入れ替えたりすると、容量や速度がそろわず、せっかくの性能を活かしきれないことがあります。スロットが2つあるパソコンなら、2枚とも同じ新しい商品に丸ごと交換してください（例：8GB×2枚 → 16GB×2枚）。');
+    tips.push('<b>空きスロットを確認してください。</b>タスクマネージャーの「スロットの使用」（ガイド画像の <span class="mark">C</span>）が「2/2」のように埋まっている場合は、増設ではなく今のメモリーとの<b>交換</b>になります。');
     tips.push('<b>他社製メモリーとの混在</b>は、相性により動作しない場合があります。確実に使うには、すべて同じ商品にそろえる（交換する）方法が安心です。');
     if (pc.speedOver) {
-      tips.push('<b>オーバークロック（XMP／EXPO）メモリーについて：</b>ゲーミングPCでは、標準より速い設定で動くメモリーが搭載されていることがあります。I-O DATA製品は定格（標準規格）品のため、混在させると全体が遅い側に揃います。');
+      tips.push('<b>オーバークロック（XMP／EXPO）メモリーについて：</b>ゲーミングPCでは、標準より速い設定で動くメモリーが搭載されていることがあります。I-O DATA製品は標準規格品のため、交換・混在させるとメモリーの速度が下がります。');
     }
     if (list.some(function (s) { return s.business; })) {
       tips.push('<b>「法人様専用」の商品</b>は店頭では販売していません。価格・納期はお取引先の販売店へお問い合わせください。');
@@ -403,12 +428,7 @@
     if (!items.length) {
       html += '<p class="empty">現在販売中の対応商品はありません。「生産終了品も表示」をオンにするか、「② スペックで探す」で後継品をお探しください。</p>';
     } else {
-      html += '<div class="skus">' + items.map(function (p) {
-        return '<span class="sku' + (p.status === 'discontinued' ? ' is-discontinued' : '') + '">' +
-          (p.capacityGB ? '<span class="cap">' + p.capacityGB + 'GB</span>' : '') +
-          (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener"><code>' + esc(p.sku) + '</code></a>' : '<code>' + esc(p.sku) + '</code>') +
-          statusBadge(p.status) + '</span>';
-      }).join('') + '</div>';
+      html += '<div class="sku-list">' + items.map(function (p) { return renderSkuRow(p, p.business); }).join('') + '</div>';
     }
     html += '<p class="note">※ 対応表の内容はパソコン出荷時の構成が対象です。オプションの選択や構成変更をしている場合は、対応が異なることがあります。</p>';
     return html;

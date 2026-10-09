@@ -66,8 +66,24 @@ export function statusFromChunk(chunk) {
   const rowEnd = chunk.search(/<\/tr>/i);
   if (rowEnd >= 0) chunk = chunk.slice(0, rowEnd);
   if (/icon_close|生産終了/.test(chunk)) return 'discontinued';
+  if (/受注停止/.test(chunk)) return 'suspended';
   if (/icon_limit|在庫限り/.test(chunk)) return 'limited';
   return null;
+}
+
+// 行の範囲（次の </tr> まで）を切り出す
+function rowChunk(html, from, to) {
+  let chunk = html.slice(from, to);
+  const rowEnd = chunk.search(/<\/tr>/i);
+  return rowEnd >= 0 ? chunk.slice(0, rowEnd) : chunk;
+}
+
+// 一覧ページとシリーズページの状態を合わせる（より強い状態を採用）
+const STATUS_WEIGHT = { current: 0, limited: 1, suspended: 2, discontinued: 3 };
+export function mergeStatus(...list) {
+  let best = 'current';
+  list.forEach((st) => { if (st && STATUS_WEIGHT[st] > STATUS_WEIGHT[best]) best = st; });
+  return best;
 }
 
 // 一覧ページ内での各型番の状態（型番の出現位置から、次の型番が出るまでの範囲を見る）
@@ -100,9 +116,10 @@ export function seriesMarkedDiscontinued(html, link) {
 }
 
 // シリーズページから型番一覧・保証・法人向けかを取り出す
-export function parseSeriesPage(html) {
+export function parseSeriesPage(html, slug) {
   const skus = [];
   const status = {};
+  const jan = {};
   const re = new RegExp(SKU_RE.source, 'g');
   const hits = [];
   let m;
@@ -110,9 +127,18 @@ export function parseSeriesPage(html) {
   hits.forEach((h, i) => {
     if (!skus.includes(h.sku)) skus.push(h.sku);
     const next = hits[i + 1] ? hits[i + 1].at : h.end + 400;
-    const st = statusFromChunk(html.slice(h.end, Math.min(next, h.end + 400)));
+    const row = rowChunk(html, h.end, Math.min(next, h.end + 400));
+    const st = statusFromChunk(row);
     if (st) status[h.sku] = st;
+    const j = row.replace(/<[^>]+>/g, ' ').match(/\b(49\d{11})\b/);
+    if (j && !jan[h.sku]) jan[h.sku] = j[1];
   });
+  // 商品画像（シリーズの代表画像 /image/<slug>_l.jpg）
+  let image = null;
+  if (slug) {
+    const im = html.match(new RegExp('(?:https?:)?(?://www\\.iodata\\.jp)?/image/' + slug + '_l\\.(?:jpg|png)', 'i'));
+    if (im) image = 'https://www.iodata.jp' + im[0].replace(/^(?:https?:)?(?:\/\/www\.iodata\.jp)?/, '');
+  }
   const text = html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<[^>]+>/g, ' ');
   let warranty = null;
   if (/無期限保証/.test(text)) warranty = '無期限保証';
@@ -121,7 +147,7 @@ export function parseSeriesPage(html) {
     if (w) warranty = `${w[1] || w[2]}年保証`;
   }
   const business = /法人様専用/.test(text);
-  return { skus, status, warranty, business };
+  return { skus, status, jan, image, warranty, business };
 }
 
 // その型番がシリーズに属するか（関連商品欄などに出る他シリーズの型番を除外する）
@@ -162,7 +188,7 @@ async function main() {
     for (const link of links) {
       let sp;
       try {
-        sp = parseSeriesPage(await get(link.url));
+        sp = parseSeriesPage(await get(link.url), link.slug);
       } catch (e) {
         if (e.status === 404) { console.warn(`  404のため飛ばします: ${link.url}`); continue; }
         throw e;
@@ -175,8 +201,7 @@ async function main() {
         if (spec.formFactor !== page.formFactor) continue; // 他カテゴリへのリンク内の型番は除外
         if (!belongsToSeries(sku, link.series)) continue;  // 関連商品欄などの他シリーズ型番は除外
         seenSku.add(sku);
-        const status = wholeEol ? 'discontinued'
-          : (listStatus[sku] || sp.status[sku] || 'current');
+        const status = wholeEol ? 'discontinued' : mergeStatus(listStatus[sku], sp.status[sku]);
         products.push({
           sku,
           series: link.series,
@@ -185,6 +210,11 @@ async function main() {
           business: spec.business || sp.business,
           status,
           warranty: sp.warranty,
+          jan: sp.jan[sku] || null,
+          image: sp.image,
+          // メモリーはメーカー価格が「オープン価格」のため、現時点では価格なし
+          priceTaxIn: null,
+          priceTaxEx: null,
         });
       }
       console.log(`  ${link.series}: ${sp.skus.length} 型番${wholeEol ? '（シリーズごと生産終了）' : ''}`);

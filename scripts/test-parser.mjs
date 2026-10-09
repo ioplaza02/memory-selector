@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import {
   parseSeriesLinks, parseStatusesFromList, seriesMarkedDiscontinued,
-  parseSeriesPage, specFromSku, belongsToSeries,
+  parseSeriesPage, specFromSku, belongsToSeries, mergeStatus,
 } from './scrape.mjs';
 
 const close = '<img src="/common/img_v2/icon_close.gif" alt="生産終了">';
@@ -69,5 +69,23 @@ assert.equal(parseSeriesPage('<p>法人様専用モデル</p>').business, true);
 assert.deepEqual(specFromSku('D5R5600-16G/GQ'), { formFactor: 'DIMM', ddr: 5, speed: 5600, capacityGB: 16, business: true });
 assert.deepEqual(specFromSku('SDZ3200-C32G/ST'), { formFactor: 'SODIMM', ddr: 4, speed: 3200, capacityGB: 32, business: false });
 assert.equal(specFromSku('HDL4-Z25SI3BB'), null);
+
+// JANコード・画像・一時受注停止
+const page2 = `<img src="/image/sdz3200cst_l.jpg" alt="">
+<table>
+<tr><td>SDZ3200-C16G/ST</td><td>4957180166155</td><td>16GB</td><td>オープン価格</td><td></td></tr>
+<tr><td>SDZ3200-C32G/ST</td><td>4957180178868</td><td>32GB</td><td>オープン価格</td><td>一時受注停止</td></tr>
+</table>`;
+const sp2 = parseSeriesPage(page2, 'sdz3200cst');
+assert.equal(sp2.jan['SDZ3200-C16G/ST'], '4957180166155');
+assert.equal(sp2.jan['SDZ3200-C32G/ST'], '4957180178868');
+assert.equal(sp2.status['SDZ3200-C32G/ST'], 'suspended');
+assert.equal(sp2.status['SDZ3200-C16G/ST'], undefined);
+assert.equal(sp2.image, 'https://www.iodata.jp/image/sdz3200cst_l.jpg');
+assert.equal(parseSeriesPage('<img src="https://www.iodata.jp/image/d5r5600_l.jpg">', 'd5r5600').image, 'https://www.iodata.jp/image/d5r5600_l.jpg');
+assert.equal(mergeStatus('current', 'suspended'), 'suspended');
+assert.equal(mergeStatus('limited', undefined), 'limited');
+assert.equal(mergeStatus(undefined, undefined), 'current');
+assert.equal(mergeStatus('limited', 'discontinued'), 'discontinued');
 
 console.log('parser tests: all passed');

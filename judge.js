@@ -39,29 +39,31 @@
         rank: 'unknown',
         label: RANK_LABEL.unknown,
         diff: 0,
-        text: '速度が分からない場合は、より速い規格の商品がおすすめです。速い規格のメモリーは、遅い規格のパソコンに挿してもパソコン側の速度に合わせて動作するため、幅広い機種で使える可能性が高くなります。'
+        text: 'お使いのパソコンの速度が分からないため、より高速な規格の商品を先に表示しています。高速なメモリーは、それより遅いパソコンに取り付けても、パソコン側の速度に合わせて動作するため、幅広い機種で使える可能性が高くなります。'
       };
     }
 
     var pcName = gen + '-' + cs + (pc.speedOver ? '以上' : '');
     var pName = gen + '-' + ps;
+    var mem = 'このメモリー（' + pName + '）';
+    var yours = 'お使いのパソコン（' + pcName + '）';
 
     if (ps === cs && !pc.speedOver) {
       return {
         rank: 'same', label: RANK_LABEL.same, diff: 0,
-        text: 'メーカー記載の ' + pcName + ' と同じ規格です。'
+        text: mem + 'は、' + yours + 'と同じ規格です。'
       };
     }
     if (ps > cs && !pc.speedOver) {
       return {
         rank: 'upper', label: RANK_LABEL.upper, diff: ps - cs,
-        text: pName + ' は ' + pcName + ' より速い規格です。パソコン側の ' + cs + ' に合わせて動作するため、性能面の問題はありません。'
+        text: mem + 'は、' + yours + 'より高速な規格です。取り付けるとパソコン側の速度（' + cs + '）に合わせて動作するため、問題なくお使いいただけます。'
       };
     }
     // 遅いメモリー → 速いPC（またはOC域）
-    var t = '動作は可能ですが、' + pName + ' は ' + pcName + ' より遅い規格のため、既存のメモリーと混ぜると全体が ' + ps + ' に揃って動作し、本来の性能より少し遅くなります。';
+    var t = mem + 'は、' + yours + 'より低速な規格です。取り付けて使うことはできますが、パソコン全体のメモリー速度がこのメモリーの速度（' + ps + '）まで下がるため、本来の性能より少し遅くなります。';
     if (pc.speedOver) {
-      t += ' ' + pcName + ' はオーバークロック（XMP / EXPO）設定で動いているメモリーの可能性が高く、I-O DATA製品（定格品）と混在させると速度が下がります。';
+      t += ' なお、' + pcName + ' のような速度は、オーバークロック（XMP／EXPO）設定で動いているメモリーの可能性が高く、I-O DATA製品（標準規格品）に交換・混在させると速度が下がります。';
     }
     return { rank: 'lower', label: RANK_LABEL.lower, diff: (pc.speedOver ? 9999 - ps : cs - ps), text: t };
   }
@@ -83,7 +85,7 @@
       if (opt.capacityGB && p.capacityGB !== opt.capacityGB) return;
       if (!bySeries[p.series]) {
         bySeries[p.series] = { series: p.series, url: p.url, speed: p.speed, ddr: p.ddr,
-          formFactor: p.formFactor, business: p.business, warranty: p.warranty,
+          formFactor: p.formFactor, business: p.business, warranty: p.warranty, image: p.image || null,
           judge: j, items: [] };
         order.push(p.series);
       }
