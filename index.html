@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>メモリーセレクター</title>
 <!-- 更新のたびに ?v= の番号を変えると、ブラウザが古いファイルを使い回さなくなる -->
-<link rel="stylesheet" href="style.css?v=20261009-18">
+<link rel="stylesheet" href="style.css?v=20261013-1">
 </head>
 <body>
 
@@ -77,6 +77,34 @@
         </ul>
         <p class="note">※ 項目名は Windows のバージョンによって少し異なります（例：「スロットの使用」が「使用中のスロット」）。また、Windows 10 や一部のパソコンでは、A の世代（DDR4／DDR5）が表示されないことがあります。その場合は、速度の数字が 4800 以上なら DDR5、3200 以下ならほぼ DDR4 です。</p>
       </div>
+    </details>
+
+    <details class="guide" id="web-guide">
+      <summary>パソコンの型番をネットで検索して調べる方法</summary>
+      <div class="guide-body">
+        <ol class="guide-steps">
+          <li><b>型番を確認します。</b>パソコン本体の裏面や側面のシール、購入時の納品書・注文履歴メールなどに記載されています。</li>
+          <li><b>「型番 ＋ メモリ」「型番 ＋ 仕様」で検索します。</b>（例：「XA7C-R46 メモリ」）パソコンメーカーや販売店の公式ページの仕様表を優先してご覧ください。</li>
+          <li><b>仕様表で、次の項目を確認します。</b>
+            <ul class="spec-check">
+              <li>メモリーの規格（例：<b>DDR5-5600</b>、PC5-44800）… ② 世代・③ 速度で使います</li>
+              <li>メモリースロットの数と空き（例：スロット2（空き1））</li>
+              <li>最大メモリー容量（例：最大64GB）</li>
+              <li>「<b>デュアルチャネル</b>」の記載 … 下の「デュアルチャネルとは？」をご覧ください</li>
+            </ul>
+          </li>
+        </ol>
+        <div class="caution">
+          <p class="caution-title">カスタムメイド（BTO）パソコンの場合のご注意</p>
+          <p>カスタムメイドのパソコンは、同じ型番でも<b>購入時に選んだ構成によって中身が異なる</b>ことがあります。たとえば、マザーボードの選択によって、メモリースロットが<b>1つだけのタイプ・2つのタイプ・4つのタイプ</b>を選べたモデルもあります。</p>
+          <p>この場合、検索で見つかる仕様とお手元のパソコンとで結果が変わってきます。<b>購入時の注文内容（注文履歴・納品書）</b>もあわせて確認し、実際のスロット数はタスクマネージャーの「スロットの使用」（ガイド画像の <span class="mark">C</span>）でも確かめてください。</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="guide" id="dual-guide">
+      <summary>デュアルチャネルとは？（メモリーを買い足す前に）</summary>
+      <div class="guide-body" id="dual-guide-body"></div>
     </details>
 
     <div class="q" data-q="form">
@@ -159,7 +187,7 @@
   <span class="next-hint-arrow" aria-hidden="true">↓</span>
 </button>
 
-<script src="judge.js?v=20261009-18"></script>
-<script src="app.js?v=20261009-18"></script>
+<script src="judge.js?v=20261013-1"></script>
+<script src="app.js?v=20261013-1"></script>
 </body>
 </html>

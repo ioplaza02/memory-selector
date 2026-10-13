@@ -149,6 +149,8 @@
       html += '<div class="msg msg-warn"><p class="msg-title">' + btoTitle + '</p>' +
         '<p>カスタムメイドのパソコンは、購入時にパーツを選んで組み立てるため、型番ごとの対応表（PIO）には載っていないことがほとんどです。</p>' +
         '<p>下の「<b>② スペックで探す</b>」で、メモリーの形・世代・速度を選んでください。I-O DATA製で使える可能性が高い商品をご案内します。</p>' +
+        '<p class="note">メモリーの規格が分からないときは、型番をネットで検索すると仕様表が見つかることがあります。ただし、カスタムメイドのパソコンは購入時の構成（メモリースロットの数など）によって中身が異なることがあるので、注文時の内容もあわせてご確認ください。</p>' +
+        '<div class="actions">' + outLink('https://www.google.com/search?q=' + encodeURIComponent(raw + ' メモリ 仕様'), '「' + raw + ' メモリ 仕様」をネットで検索', 'btn btn-outline') + '</div>' +
         (state.bto.guess
           ? '<p class="note">型番の形から判断しています。メーカー製パソコンの場合は <a href="' + esc(pioUrl) + '" target="_blank" rel="noopener">PIOで検索</a> もお試しください。</p>'
           : '') + '</div>';
@@ -179,6 +181,12 @@
     }
     updateNextHint();
     render();
+  }
+
+  function outLink(url, label, cls) {
+    return canEmbedPio()
+      ? '<a class="' + cls + '" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(label) + '</a>'
+      : '<a class="' + cls + ' js-pio-same" href="' + esc(url) + '">' + esc(label) + '</a>';
   }
 
   // PIO の結果を見たあとの進み方（表示された／該当情報なし）
@@ -413,6 +421,9 @@
       html += '<div class="series-list">' + list.map(renderSeries).join('') + '</div>';
     }
 
+    if (list.length) {
+      html += '<section class="dual-box"><h3>デュアルチャネルについて（ご購入前に）</h3>' + dualChannelHtml() + '</section>';
+    }
     html += renderTips(pc, list);
     html += renderDisclaimer();
     return html;
@@ -442,9 +453,31 @@
       '</article>';
   }
 
+  // デュアルチャネルの解説（スペックで探すのガイドと、結果画面の両方で使う）
+  function dualChannelHtml() {
+    return '<div class="dual">' +
+      '<p class="dual-lead">デュアルチャネルとは、<b>同じ容量・同じ規格のメモリーを2枚1組で使う</b>ことで、データの通り道を2本にして速さを引き出す仕組みです。メーカーの仕様表に「デュアルチャネル対応」と書かれているパソコンでは、組み合わせ方で性能が変わります。</p>' +
+      '<div class="dual-case">' +
+        '<p class="dual-q">例：スロットが2つあって、今は<b>1枚だけ</b>入っている。空いている1つに買い足したい…</p>' +
+        '<div class="dual-row bad">' +
+          '<span class="dual-mark">△</span>' +
+          '<div class="dual-slots"><span class="slot old">今のメモリー<small>8GB</small></span><span class="slot new">新しいメモリー<small>16GB</small></span></div>' +
+          '<p class="dual-note"><b>1枚だけ買い足す</b><br>容量や速度がそろわず、本来の性能を発揮しにくくなります。</p>' +
+        '</div>' +
+        '<div class="dual-row good">' +
+          '<span class="dual-mark">◎</span>' +
+          '<div class="dual-slots"><span class="slot new">新しいメモリー<small>16GB</small></span><span class="slot new">新しいメモリー<small>16GB</small></span></div>' +
+          '<p class="dual-note"><b>2枚とも新しくそろえる（おすすめ）</b><br>今のメモリーを取り外し、同じ商品を2枚入れます。</p>' +
+        '</div>' +
+      '</div>' +
+      '<p class="dual-buy"><span class="dual-buy-ico" aria-hidden="true">🛒</span><span>I-O DATA のメモリーは<b>1箱に1枚入り</b>です。2枚1組にするときは、<b>同じ型番を同じタイミングで2箱</b>ご購入ください。</span></p>' +
+      '<p class="note">スロットが4つあるパソコンの場合も、2枚または4枚を同じ商品でそろえるのがおすすめです。</p>' +
+    '</div>';
+  }
+
   function renderTips(pc, list) {
     var tips = [];
-    tips.push('<b>交換するなら、2枚とも新しいメモリーにそろえるのがおすすめです。</b>メモリーは、同じ容量・同じ規格のものを2枚1組で使うと「デュアルチャネル」という仕組みで本来の速さを発揮します。もともと入っているメモリーを1枚残したまま、新しいメモリーを1枚だけ足したり入れ替えたりすると、容量や速度がそろわず、せっかくの性能を活かしきれないことがあります。スロットが2つあるパソコンなら、2枚とも同じ新しい商品に丸ごと交換してください（例：8GB×2枚 → 16GB×2枚）。');
+    tips.push('<b>2枚1組（同じ型番を2箱）でのご購入がおすすめです。</b>空きスロットがあって1枚だけ買い足したい場合でも、今のメモリーを取り外して2枚とも新しくそろえると、本来の性能を発揮できます（上の「デュアルチャネルについて」をご覧ください）。');
     tips.push('<b>空きスロットを確認してください。</b>タスクマネージャーの「スロットの使用」（ガイド画像の <span class="mark">C</span>）が「2/2」のように埋まっている場合は、増設ではなく今のメモリーとの<b>交換</b>になります。');
     tips.push('<b>他社製メモリーとの混在</b>は、相性により動作しない場合があります。確実に使うには、すべて同じ商品にそろえる（交換する）方法が安心です。');
     if (pc.speedOver) {
@@ -605,6 +638,7 @@
     $('#cpu-select').addEventListener('change', onCpu);
     $('#toggle-eol').addEventListener('change', function (e) { state.showEol = e.target.checked; render(); });
     $('#share-btn').addEventListener('click', onShare);
+    $('#dual-guide-body').innerHTML = dualChannelHtml();
     $('#model-result').addEventListener('click', function (e) {
       if (e.target.closest('.js-go-spec')) { goSpec(); return; }
       var same = e.target.closest('.js-pio-same');
