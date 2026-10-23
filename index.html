@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-
-  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>メモリーセレクター</title>
 <!-- 更新のたびに ?v= の番号を変えると、ブラウザが古いファイルを使い回さなくなる -->
-<link rel="stylesheet" href="style.css?v=20261013-1">
+<link rel="stylesheet" href="style.css?v=20261023-1">
 </head>
 <body>
 
@@ -29,15 +23,20 @@
 
 <div id="app" hidden>
 <header class="site-header">
-  <div class="wrap header-inner">
-    <div>
-      <p class="brand">I-O DATA</p>
-      <h1>メモリーセレクター</h1>
-      <p class="lead">お使いのパソコンに増設できる I-O DATA 製メモリーを探します</p>
+  <div class="header-bar">
+    <div class="header-left">
+      <span class="internal">【社内限定】</span>
+      <span class="brand-io">I-O DATA</span>
+      <span class="tool-badge">メモリーセレクター</span>
     </div>
-    <p id="updated" class="updated"></p>
+    <span class="contact-pill">お問い合わせ先：IS課 西川</span>
   </div>
 </header>
+<div class="wrap page-title">
+  <h1>メモリー選定ツール</h1>
+  <p class="lead">お使いのパソコンに増設できる I-O DATA 製メモリーを探します</p>
+  <p id="updated" class="updated"></p>
+</div>
 
 <main class="wrap">
 
@@ -193,7 +192,7 @@
   <span class="next-hint-arrow" aria-hidden="true">↓</span>
 </button>
 
-<script src="judge.js?v=20261013-1"></script>
-<script src="app.js?v=20261013-1"></script>
+<script src="judge.js?v=20261023-1"></script>
+<script src="app.js?v=20261023-1"></script>
 </body>
 </html>

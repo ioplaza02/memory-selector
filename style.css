@@ -51,13 +51,25 @@ a { color: var(--info); }
 .gate-error { color: var(--bad); font-size: 13px; margin: 0; }
 
 /* ---------- ヘッダー ---------- */
-.site-header { background: var(--navy); color: #fff; padding: 22px 0 20px; margin-bottom: 20px; }
-.header-inner { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
-.brand { margin: 0; font-size: 12px; letter-spacing: .14em; color: #f2b26f; font-weight: 700; }
-.site-header h1 { margin: 2px 0 4px; font-size: 26px; letter-spacing: .02em; }
-.lead { margin: 0; font-size: 14px; opacity: .85; }
-.updated { margin: 0; font-size: 12px; opacity: .85; }
-.updated.stale { color: #ffb3a8; font-weight: 700; opacity: 1; }
+.site-header {
+  background: linear-gradient(100deg, #15203d 0%, var(--navy) 45%, #2c4a8a 100%);
+  color: #fff; padding: 22px 0; position: relative; overflow: hidden;
+}
+.header-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 0 24px; }
+.header-left { display: flex; align-items: center; gap: 10px 16px; flex-wrap: wrap; }
+.internal { color: #f5c542; font-weight: 700; font-size: 18px; letter-spacing: .02em; white-space: nowrap; }
+.brand-io { font-size: 24px; font-weight: 900; letter-spacing: .06em; white-space: nowrap; }
+.tool-badge, .contact-pill {
+  display: inline-flex; align-items: center; border: 1.5px solid rgba(255,255,255,.55); background: rgba(255,255,255,.12);
+  color: #fff; border-radius: 999px; font-weight: 700; white-space: nowrap;
+}
+.tool-badge { font-size: 14px; padding: 6px 16px; }
+.contact-pill { font-size: 14px; padding: 9px 20px; }
+.page-title { padding-top: 22px; padding-bottom: 16px; }
+.page-title h1 { margin: 0 0 4px; font-size: 28px; color: var(--ink); letter-spacing: .02em; }
+.lead { margin: 0; font-size: 14px; color: var(--muted); }
+.updated { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.updated.stale { color: var(--bad); font-weight: 700; }
 
 /* ---------- カード ---------- */
 .card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--line); padding: 22px 22px 20px; margin-bottom: 18px; }
@@ -203,7 +215,12 @@ kbd { border: 1px solid #c8ccd6; border-bottom-width: 2px; border-radius: 4px; p
 .site-footer p { margin: 0 0 4px; }
 
 @media (max-width: 640px) {
-  .site-header h1 { font-size: 22px; }
+  .page-title h1 { font-size: 22px; }
+  .header-bar { padding: 0 16px; }
+  .internal { font-size: 15px; }
+  .brand-io { font-size: 19px; }
+  .tool-badge { font-size: 12px; padding: 5px 12px; }
+  .contact-pill { font-size: 12px; padding: 7px 14px; }
   .card { padding: 18px 14px 16px; }
   .series { grid-template-columns: 1fr; }
   .series-link { justify-self: start; }
