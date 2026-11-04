@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-03T22:49:16.571Z",
+  "updatedAt": "2026-11-04T23:07:21.752Z",
   "source": "https://www.iodata.jp/product/memory/",
   "products": [
     {
@@ -351,54 +351,6 @@
       "warranty": "6年保証",
       "jan": "4957180193595",
       "image": "https://www.iodata.jp/image/sd5r5600gq_l.jpg",
-      "priceTaxIn": null,
-      "priceTaxEx": null
-    },
-    {
-      "sku": "SD5R4800-8G",
-      "series": "SD5R4800シリーズ",
-      "url": "https://www.iodata.jp/product/memory/note/sd5r4800/index.htm",
-      "formFactor": "SODIMM",
-      "ddr": 5,
-      "speed": 4800,
-      "capacityGB": 8,
-      "business": false,
-      "status": "discontinued",
-      "warranty": "無期限保証",
-      "jan": "4957180177533",
-      "image": "https://www.iodata.jp/image/sd5r4800_l.jpg",
-      "priceTaxIn": null,
-      "priceTaxEx": null
-    },
-    {
-      "sku": "SD5R4800-16G",
-      "series": "SD5R4800シリーズ",
-      "url": "https://www.iodata.jp/product/memory/note/sd5r4800/index.htm",
-      "formFactor": "SODIMM",
-      "ddr": 5,
-      "speed": 4800,
-      "capacityGB": 16,
-      "business": false,
-      "status": "discontinued",
-      "warranty": "無期限保証",
-      "jan": "4957180177540",
-      "image": "https://www.iodata.jp/image/sd5r4800_l.jpg",
-      "priceTaxIn": null,
-      "priceTaxEx": null
-    },
-    {
-      "sku": "SD5R4800-32G",
-      "series": "SD5R4800シリーズ",
-      "url": "https://www.iodata.jp/product/memory/note/sd5r4800/index.htm",
-      "formFactor": "SODIMM",
-      "ddr": 5,
-      "speed": 4800,
-      "capacityGB": 32,
-      "business": false,
-      "status": "discontinued",
-      "warranty": "無期限保証",
-      "jan": "4957180177557",
-      "image": "https://www.iodata.jp/image/sd5r4800_l.jpg",
       "priceTaxIn": null,
       "priceTaxEx": null
     },
